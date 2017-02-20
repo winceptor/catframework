@@ -135,6 +135,12 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 //core middleware
 app.use(logger);
 
+
+//additional core middleware
+app.use(translator);
+app.use(catparser);
+
+//pages
 app.use(routes);
 
 

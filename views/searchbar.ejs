@@ -1,0 +1,19 @@
+<% if (typeof query == "undefined") { query = ""; } %>
+<!-- searchbar -->
+
+<form class="col-sm-12 form-horizontal vertical-spacing" method="get" action="instagram_api">
+	<div class="row">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="input-group">
+					<input id="searchinput" type="text" class="form-control" name="q" value="<%= query || '' %>" placeholder="Instagram username..." onFocus="this.select()" autofocus>
+
+					<span class="input-group-btn">
+						<button id="searchbutton" class="btn btn-primary" type="submit">Search</button>
+					</span>
+				
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
