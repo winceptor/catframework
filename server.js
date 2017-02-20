@@ -1,7 +1,7 @@
 // server.js
 var servicename = process.env.NAME || "server.js";
 
-console.log("###############################");
+//console.log("###############################");
 console.log("Starting service: " + servicename);
 console.log("###############################");
 
@@ -23,11 +23,13 @@ var secret =require('./config/secret');
 var wip = config.wip || false;
 if (wip)
 {
-	console.log("!!!WORK IN PROGRESS!!!");
+	console.log("Warning: Work in progress = true");
 }
+console.log("###############################");
 
 var server_port     = process.env.PORT || secret.server_port || 8080;
 var server_sslport     = process.env.SSLPORT || secret.server_sslport || 8088;
+var server_ip = process.env.IP || secret.server_ip || "localhost";
 
 // set up ======================================================================
 var fs = require('fs');
@@ -89,14 +91,14 @@ var db_ok;
 try {
 	mongoose.connect(secret.db_database,function(err){
 		if(err){
-			console.log("Failed to connect to database: " + secret.db_database + "\n" + err);
+			console.log("Failed to connect to: " + secret.db_database);
 		}else {
 			console.log("Connected to the database!");
 			db_ok = true;
 		}
 	});
 } catch (err) {
-	console.log("Fatal error connecting to database: " + secret.db_database + "\n" + err.message);
+	console.log("Fatal error connecting to: " + secret.db_database + "\n" + err.message);
 	db_ok = false;
 }
 
@@ -140,11 +142,11 @@ app.use(routes);
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(secret.server_port, function(err){
+httpServer.listen(server_port, server_ip, function(err){
 	if(err) throw err;
-	console.log("Server is running on port: "+ server_port);
+	console.log("HTTP server is running on: " + server_ip + ":" + server_port);
 });
-httpsServer.listen(secret.server_sslport, function(err){
+httpsServer.listen(server_sslport, server_ip, function(err){
 	if(err) throw err;
-	console.log("Server is running on sslport: "+ server_sslport);
+	console.log("HTTPS server is running on: " + server_ip + ":" + server_sslport);
 });
