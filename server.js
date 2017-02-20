@@ -18,8 +18,13 @@ else
 }
 
 var config =require('./config/config');
-var wip = config.wip || false;
 var secret =require('./config/secret');
+
+var wip = config.wip || false;
+if (wip)
+{
+	console.log("!!!WORK IN PROGRESS!!!");
+}
 
 var server_port     = process.env.PORT || secret.server_port || 8080;
 var server_sslport     = process.env.SSLPORT || secret.server_sslport || 8088;
@@ -70,14 +75,30 @@ var routes = require('./routes/routes');
 
 
 // configuration ===============================================================
-//mongoose.connect(configDB.url); // connect to our database
-mongoose.connect(secret.db_database,function(err){
-	if(err){
-		console.log(err);
-	}else {
-		console.log("Connected to the database!");
-	}
+//Error handling, src: http://stackoverflow.com/a/14049430
+mongoose.connection.on("open", function(ref) {
+  return console.log("Connected to mongo server!".green);
 });
+mongoose.connection.on("error", function(err) {
+  console.log("Could not connect to mongo server!".yellow);
+  return console.log(err.message.red);
+});
+
+//mongoose.connect(configDB.url); // connect to our database
+var db_ok;
+try {
+	mongoose.connect(secret.db_database,function(err){
+		if(err){
+			console.log("Failed to connect to database: " + secret.db_database + "\n" + err);
+		}else {
+			console.log("Connected to the database!");
+			db_ok = true;
+		}
+	});
+} catch (err) {
+	console.log("Fatal error connecting to database: " + secret.db_database + "\n" + err.message);
+	db_ok = false;
+}
 
 app.use(compression({level: 3}));
 
@@ -94,12 +115,16 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.engine('ejs',ejsmate);
 app.set('view engine', 'ejs'); // set up ejs for templating
 
-app.use(session({
-	resave:true,
-	saveUninitialized:true,
-	secret:secret.db_secretkey,
-	store:new mongoStore({ url:secret.db_database, autoReconnect:true})
-}));
+//mongostore connection
+
+if (db_ok) {
+	app.use(session({
+		resave:true,
+		saveUninitialized:true,
+		secret:secret.db_secretkey,
+		store:new mongoStore({ url:secret.db_database, autoReconnect:true})
+	}));
+}
 
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions

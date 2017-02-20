@@ -12,10 +12,6 @@ var sanitize = require('elasticsearch-sanitize');
 
 
 var wip = config.wip || false;
-if (wip)
-{
-	console.log("!!!WORK IN PROGRESS!!!");
-}
 
 //using format dd.mm.yyyy for date
 function InputToDate(input)

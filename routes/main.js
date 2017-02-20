@@ -7,12 +7,6 @@ var config = require('../config/config');
 
 var passport = require('./passport');
 
-var wip = config.wip || false;
-if (wip)
-{
-	console.log("!!!WORK IN PROGRESS!!!");
-}
-
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 
