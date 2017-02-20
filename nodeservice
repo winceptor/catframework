@@ -1,0 +1,313 @@
+#!/bin/sh
+SRV_NAME="nodeservice"
+APP_DIR="/srv/www/$SRV_NAME"
+
+USER="root"
+NODE_ENV="production"
+PORT="80"
+APP_DB="$SRV_NAME"
+
+NODE_APP="server.js"
+CONFIG_DIR="$APP_DIR"
+PID_DIR="$APP_DIR/pid"
+PID_FILE="$PID_DIR/server.pid"
+LOG_DIR="$APP_DIR/log"
+LOG_FILE="$LOG_DIR/server.log"
+NODE_EXEC=$(which node)
+APP_NAME="Node server app $SRV_NAME"
+NOW=$(date +"%Y%m%d-%H%M")
+LAST=$(cd $APP_DIR/backup && ls -t | head -1)
+
+###############
+
+# REDHAT chkconfig header
+
+# chkconfig: - 58 74
+# description: node-app is the script for starting a node app on boot.
+### BEGIN INIT INFO
+# Provides: node
+# Required-Start:    $network $remote_fs $local_fs
+# Required-Stop:     $network $remote_fs $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start and stop node
+# Description: Node process for app
+### END INIT INFO
+
+###############
+
+USAGE="Usage: $0 {install|start|stop|restart|status|log [name]|logs|backup [name]|restore [name]|backups|update|liveupdate} [--force]"
+FORCE_OP=false
+ARGS=false
+
+pid_file_exists() {
+    [ -f "$PID_FILE" ]
+}
+
+log_file_exists() {
+    [ -f "$LOG_FILE" ]
+}
+
+get_pid() {
+    echo "$(cat "$PID_FILE")"
+}
+
+is_running() {
+    PID=$(get_pid)
+    ! [ -z "$(ps aux | awk '{print $2}' | grep "^$PID$")" ]
+}
+
+start_it() {
+    mkdir -p "$PID_DIR"
+    chown $USER:$USER "$PID_DIR"
+    mkdir -p "$LOG_DIR"
+    chown $USER:$USER "$LOG_DIR"
+
+    echo "Starting $APP_NAME ..."
+    echo "cd $APP_DIR && PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP 1>$LOG_FILE 2>&1 & echo \$! > $PID_FILE" | sudo -i -u $USER
+    echo "$APP_NAME started with pid $(get_pid)"
+}
+
+stop_process() {
+    PID=$(get_pid)
+    echo "Killing process $PID"
+    pkill -P $PID
+}
+
+remove_pid_file() {
+    echo "Removing pid file"
+    rm -f "$PID_FILE"
+}
+
+start_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            PID=$(get_pid)
+            echo "$APP_NAME already running with pid $PID"
+            exit 1
+        else
+            echo "$APP_NAME stopped, but pid file exists"
+            if [ $FORCE_OP = true ]
+            then
+                echo "Forcing start anyways"
+                remove_pid_file
+                start_it
+            fi
+        fi
+    else
+        start_it
+    fi
+}
+
+
+stop_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            echo "Stopping $APP_NAME ..."
+            stop_process
+            remove_pid_file
+            echo "$APP_NAME stopped"
+        else
+            echo "$APP_NAME already stopped, but pid file exists"
+            if [ $FORCE_OP = true ]
+            then
+                echo "Forcing stop anyways ..."
+                remove_pid_file
+                echo "$APP_NAME stopped"
+            else
+                exit 1
+            fi
+        fi
+    else
+        echo "$APP_NAME already stopped, pid file does not exist"
+        exit 1
+    fi
+}
+
+status_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            PID=$(get_pid)
+            echo "$APP_NAME running with pid $PID"
+        else
+            echo "$APP_NAME stopped, but pid file exists"
+        fi
+    else
+        echo "$APP_NAME stopped"
+    fi
+}
+
+log_app() {
+	LOG=$LOG_FILE
+	if [ $ARGS ]
+	then
+		if [ -f "$LOG_DIR/$ARGS.log" ]
+		then
+			LOG="$LOG_DIR/$ARGS.log"
+		else
+			LOG="$LOG_DIR/$ARGS"
+		fi
+	fi
+    if [ -f $LOG ]
+    then
+        cat $LOG
+    else
+        echo "$APP_NAME log file missing (try logs)"
+    fi
+}
+
+logs_app() {
+	if [ -d $LOG_DIR ]
+	then
+		echo "cd $LOG_DIR && ls -t" | sudo -i -u $USER
+	else
+		echo "No logs found"
+	fi
+}
+
+update_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            PID=$(get_pid)
+            echo "$APP_NAME still running with pid $PID"
+            
+        else
+            echo "$APP_NAME stopped, but pid file exists"
+        fi
+		exit 1
+    else
+		echo "cd $APP_DIR && git pull origin master" | sudo -i -u $USER
+    fi
+}
+
+install_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            PID=$(get_pid)
+            echo "$APP_NAME still running with pid $PID"
+            
+        else
+            echo "$APP_NAME stopped, but pid file exists"
+        fi
+		exit 1
+    else
+		echo "cd $APP_DIR && npm install" | sudo -i -u $USER
+    fi
+}
+
+backup_app() {
+	BACKUP=$NOW
+	if [ $ARGS ]
+	then
+		BACKUP=$ARGS
+	fi
+	echo "cd $APP_DIR/backup && mongodump --db $APP_DB --out $BACKUP" | sudo -i -u $USER
+}
+
+restore_app() {
+	BACKUP=$LAST
+	if [ $ARGS ]
+	then
+		BACKUP=$ARGS
+	fi
+	if [ -d $APP_DIR/backup/$BACKUP ]
+	then
+			echo "cd $APP_DIR/backup && mongorestore --drop --db $APP_DB $BACKUP/$APP_DB" | sudo -i -u $USER
+	else
+			echo "No backup found"
+	fi
+}
+
+backups_app() {
+	BACKUP=$LAST
+	if [ -d $APP_DIR/backup/$BACKUP ]
+	then
+			echo "cd $APP_DIR/backup && ls -t" | sudo -i -u $USER
+	else
+			echo "No backup found"
+	fi
+}
+
+
+case "$2" in
+    --force)
+        FORCE_OP=true
+    ;;
+
+    *)
+		ARGS="$2"
+    ;;
+esac
+
+
+case "$1" in
+	install)
+		install_app
+    ;;
+		
+    start)
+        start_app
+    ;;
+
+    stop)
+        stop_app
+    ;;
+
+    restart)
+        stop_app
+        start_app
+    ;;
+
+    status)
+        status_app
+    ;;
+	
+	log)
+        log_app
+    ;;
+	
+	logs)
+        logs_app
+    ;;
+	
+	update)
+		update_app
+		install_app
+    ;;
+		
+	backups)
+		backups_app
+    ;;
+	
+	backup)
+		backup_app
+    ;;
+	
+	restore)
+		restore_app
+    ;;
+	
+	liveupdate)
+		stop_app
+		update_app
+		install_app
+		start_app
+		status_app
+    ;;
+	
+    *)
+        echo $USAGE
+        exit 1
+    ;;
+esac
+

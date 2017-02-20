@@ -1,0 +1,37 @@
+<!-- javascript -->
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap-select.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/catparser.js"></script>
+<script src="/js/loading.js"></script>
+<script>
+	$(document).ready(function(){
+		if (window.opener==null) {
+			var closebutton = document.getElementById("closebutton");
+			if (closebutton)
+			{
+				//closebutton.innerHTML = "###back###";
+				//closebutton.setAttribute('onclick','history.back()');
+				closebutton.remove();
+			}
+		}
+	});
+</script>
+<script>
+	function confirm_command(message, command, method) {
+		method = method || "post";
+		
+		var r = confirm(message);
+		if (r == true) {
+			var form = document.createElement("form");
+			form.setAttribute("method", method);
+			form.setAttribute("action", command);
+			
+			document.body.appendChild(form);
+			form.submit();
+			//window.location.href = command;
+		}
+	}
+</script>
+
+<script src='https://www.google.com/recaptcha/api.js'></script>

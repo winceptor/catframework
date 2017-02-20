@@ -1,0 +1,43 @@
+{
+  "name": "Catframework",
+  "version": "0.1",
+  "description": "Node.js basic framework",
+  "main": "server.js",
+  "scripts": {
+	"test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "framework"
+  ],
+  "author": "Creec Winceptor",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.2",
+    "compression": "^1.6.2",
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^1.3.2",
+    "cookie-parser": "^1.4.3",
+    "country-list": "^1.1.0",
+    "ejs": "^2.5.5",
+    "ejs-mate": "^2.3.0",
+    "elasticsearch-sanitize": "^2.0.0",
+    "express": "^4.14.0",
+    "express-flash": "0.0.2",
+    "express-session": "^1.14.2",
+    "file-stream-rotator": "0.0.7",
+    "helmet": "^3.1.0",
+    "mkdirp": "^0.5.1",
+    "mongoosastic": "^4.2.1",
+    "mongoose": "^4.7.3",
+    "morgan": "^1.7.0",
+    "multer": "^1.2.1",
+    "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
+    "passport-google-oauth": "^1.0.0",
+    "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4",
+    "request": "^2.79.0",
+    "session": "^0.1.0"
+  }
+}

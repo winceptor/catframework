@@ -1,0 +1,26 @@
+<!-- ifb -->
+<div id="ifb" class="smooth">
+	<h3 onclick="$( '#ifb' ).toggleClass( 'expand' ); $( '#ifbmsg' ).focus();" class="btn title">Instant feedback</h3>
+	<div id="ifb-container">
+		
+		<form class="spacing form-horizontal" method="post" action="/ifb">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="description">
+						<textarea maxlength="1000" rows="10" id="ifbmsg" name="ifbmsg" placeholder="Write instant feedback..." class="form-control"></textarea>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="spacing pull-right">
+						<span>This feedback is logged and will be used to improve this website. </span>
+						<button type="submit" class="btn btn-primary btn-warning">###submit###</button>
+						<button type="button" onclick="$( '#ifb' ).removeClass( 'expand' );" class="btn btn-close">###close###</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

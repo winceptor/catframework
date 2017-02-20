@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="<% if (typeof languagecode != "undefined") { %><%= languagecode %><% } %>">
+<head>
+	<meta charset="UTF-8">
+	
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Catchat for chatting">
+	<meta name="keywords" content="Catchat cat chat">
+	<meta name="author" content="Creec">
+	
+  <link rel="icon" href="/logo.png">
+  <title>Catchat</title>
+  
+  <link rel="canonical" href="<%= canonicalurl %>">
+
+  <% include ./css %>
+  
+  <% include ./javascript %>
+  
+</head>
+<body>
+	<% include ./header %>
+	
+	<div class="center">
+		<% include ./message %>
+		
+		<div id="loadingcontent">
+			<%- body -%>
+		</div>
+	</div>
+	
+	<% include ./footer %>
+	
+	
+	<% if (wip || false) { %>
+		<% include ./wip %>
+	<% } %>
+	
+	<% if (wip || true) { %>
+		<% include ./ifb %>
+	<% } %>
+</body>
+</html>
