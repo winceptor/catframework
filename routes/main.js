@@ -22,7 +22,7 @@ function isLoggedIn(req, res, next) {
 // HOME PAGE (with login links) ========
 // =====================================
 router.get('/', function(req, res) {
-	res.render('index.ejs'); // load the index.ejs file
+	res.render('index.ejs', { errors: req.flash('error'), message: req.flash('message') }); // load the index.ejs file
 });
 
 // =====================================
@@ -78,5 +78,11 @@ router.get('/logout', function(req, res) {
 	req.logout();
 	res.redirect('/');
 });
+
+	
+
+
+
+
 
 module.exports=router;

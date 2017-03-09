@@ -83,3 +83,14 @@ body {
 #ifbmsg {
 	resize: none;
 }
+
+#map {
+height: 400px;
+width: 100%;
+   border-radius: 6px;
+}
+
+.vertical-spacing {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}

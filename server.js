@@ -31,6 +31,8 @@ var server_port     = process.env.PORT || secret.server_port || 8080;
 var server_sslport     = process.env.SSLPORT || secret.server_sslport || 8088;
 var server_ip = process.env.IP || secret.server_ip || "localhost";
 
+//var instagram_access_token = secret.instagram_access_token || '';
+
 // set up ======================================================================
 var fs = require('fs');
 var compression = require('compression')
@@ -75,6 +77,20 @@ var catparser = require('./routes/catparser');
 
 var routes = require('./routes/routes');
 
+/*
+var InstagramAPI = require('instagram-api');
+var instagramAPI = new InstagramAPI(instagram_access_token);
+
+//testing instagram api
+instagramAPI.userSelf().then(function(result) {
+	console.log("Got instagram access!");
+    console.log(result.data); // user info 
+    console.log("api limit: " + result.limit); // api limit 
+    console.log("api request remaining: " + result.remaining) // api request remaining 
+}, function(err){
+    console.log(err); // error info 
+});
+*/
 
 // configuration ===============================================================
 //Error handling, src: http://stackoverflow.com/a/14049430
@@ -87,14 +103,13 @@ mongoose.connection.on("error", function(err) {
 });
 
 //mongoose.connect(configDB.url); // connect to our database
-var db_ok;
+var db_ok = true;
 try {
 	mongoose.connect(secret.db_database,function(err){
 		if(err){
 			console.log("Failed to connect to: " + secret.db_database);
 		}else {
 			console.log("Connected to the database!");
-			db_ok = true;
 		}
 	});
 } catch (err) {
@@ -126,6 +141,7 @@ if (db_ok) {
 		secret:secret.db_secretkey,
 		store:new mongoStore({ url:secret.db_database, autoReconnect:true})
 	}));
+	console.log("Sessions active.");
 }
 
 app.use(passport.initialize());
@@ -146,13 +162,16 @@ app.use(routes);
 
 // launch ======================================================================
 var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
+
 
 httpServer.listen(server_port, server_ip, function(err){
 	if(err) throw err;
 	console.log("HTTP server is running on: " + server_ip + ":" + server_port);
 });
+/*
+var httpsServer = https.createServer(credentials, app);
 httpsServer.listen(server_sslport, server_ip, function(err){
 	if(err) throw err;
 	console.log("HTTPS server is running on: " + server_ip + ":" + server_sslport);
 });
+*/
