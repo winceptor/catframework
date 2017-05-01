@@ -10,11 +10,15 @@ var gethtmlfor = function(tag, tagcontent, last)
 	{
 		htmlcode = tagcontent;
 	}
+	if (tag =="icon")
+	{
+		htmlcode = "<img src='http://cdn.steamcommunity.com/economy/emoticon/" + tagcontent + "' class='icon' name='" + tagcontent + "' onError='imageerror(this);'>";
+	}
 	if (tag =="autoparse")
 	{
 		var pattern1 = /\.mp3|\.wav|\.ogg|dl\.my\-hit\.com\//i;
 		var pattern2 = /\.mp4|\.webm|\.webp|\.mkv|\.avi|\.m3u8/i;
-		var pattern3 = /\.png|\.jpg|\.jpeg|\.gif|\.apng|\.steamusercontent\.com\/ugc\//i;
+		var pattern3 = /\.svg|\.png|\.jpg|\.jpeg|\.gif|\.apng|\.steamusercontent\.com\/ugc\//i;
 		var pattern4 = /\.swf|\.flv/i;
 		var pattern5 = /www\.youtube\.com\/watch\?/ig;
 		var pattern6 = /soundcloud\.com/ig;
@@ -177,6 +181,20 @@ var ImageExist = function(url)
    return img.height != 0;
 }
 
+function imageerror(object)
+{
+//$(document).on('error', '.icon', function() {
+	//console.log("found error icon");
+	if ($(object).hasClass("icon"))
+	{
+		var text = ":" + $(object).prop('name') + ":";
+		$(object).replaceWith(text);
+	}
+	else
+	{
+		$(object).attr('src', 'error.png');
+	}
+}
 
 
 var parsecontent = function(textcontent)
@@ -256,7 +274,68 @@ var parsetext = function(input) {
 			
 		}
 		
-		textlines[v] = textstrings.join(" ");
+		var onetextline = textstrings.join(" ");
+			
+	var parsedemoticons = "";
+	//var toparseemoticons = parsedlinktext;
+	var words = onetextline.split(" ");
+
+	for (var i in words) 
+	{
+		var word = words[i];
+		var emoticon = word;
+		
+		//var pattern1 = /:$/;
+		//var pattern2 = /^:/;
+		//var result = word.match(pattern1) && word.match(pattern2);
+		
+		var emoticons = "";
+		var split = word.split(":");
+		var j = 0;
+		for (j = 0; j < split.length; j++) 
+		{ 
+			
+			if ( j%2 == 1 && split.length>(j+1))
+			{
+				var url = "http://cdn.steamcommunity.com/economy/emoticon/" + split[j];
+				var iconname = split[j];
+				emoticon = gethtmlfor("icon",iconname);
+				
+				/*if (ImageExist(url))
+				{
+					emoticon = gethtmlfor("icon",url);		
+				}
+				else
+				{
+					emoticon = gethtmlfor("icon",url);	
+					//emoticon = ":" + emoticon + ":";
+				}
+				*/
+			}
+			else
+			{
+				if (j%2 == 1)
+				{
+					emoticon = ":" + split[j];
+				}
+				else
+				{
+					emoticon = split[j];
+				}
+			}
+			emoticons = emoticons + emoticon;
+		}
+		if (i>0)
+		{
+			parsedemoticons = parsedemoticons + " " + emoticons;
+		}
+		else
+		{
+			parsedemoticons = emoticons;
+		}
+	}
+		
+		textlines[v] = parsedemoticons;
 	}
 	var output = textlines.join("<br>");
 
@@ -269,87 +348,6 @@ var parsemessage = function(message)
 	return parsedmessage || "";
 }
 
-/*
-var parsemessage0 = function(message)
-{
-	var parsedmessage = "";
-	var toparsemessage = message;
-
-	while(toparsemessage)
-	{
-		var splitter = toparsemessage.split("[");
-		
-		var text = splitter[0];
-		
-		var parsedlinktext = "";
-		
-		var textlines = text.split(/\r\n|\r|\n/g);
-		
-		for (k in textlines)
-		{
-			var toparselinktext = textlines[k];
-			var parsedline = "";
-		
-			while(toparselinktext)
-			{
-				var splitter2 = toparselinktext.split("://");
-				var linktext = splitter2[0];
-				var splitter3 = linktext.split(" ");
-
-				splitter2.shift();
-				toparselinktext = splitter2.join("://");
-				
-				var htmlparse = "";
-				if (toparselinktext)
-				{
-					var protocol = splitter3[splitter3.length-1];
-					
-					splitter3.pop()
-					linktext = splitter3.join(" ") + " ";
-					
-					splitter2 = toparselinktext.split(" ");
-					var tagcontent = splitter2[0];
-					splitter2.shift();
-					toparselinktext = " " + splitter2.join(" ");
-					htmlparse = protocol + "://" + tagcontent;
-					htmlparse = gethtmlfor("autoparse",htmlparse);
-				}
-				
-				parsedline += linktext + htmlparse;
-			}
-			parsedlinktext += parsedline;
-			parsedlinktext += "<br>";
-		}	
-		
-		parsedmessage = parsedmessage + parsedlinktext;
-		splitter.shift();
-		toparsemessage = splitter.join("[");
-		
-		if (toparsemessage)
-		{
-			var toparsemessagefallback = toparsemessage;
-			splitter = toparsemessage.split("]");
-			
-			var tag = splitter[0];
-			splitter.shift();
-			toparsemessage = splitter.join("]");
-			if (toparsemessage)
-			{
-				splitter = toparsemessage.split("[/" + tag + "]");
-				var tagcontent = splitter[0];
-				splitter.shift();
-				toparsemessage = splitter.join("[/" + tag + "]");
-				parsedmessage = parsedmessage + " " + gethtmlfor(tag,tagcontent,!toparsemessage);
-			}
-			else
-			{
-				parsedmessage = parsedmessage + " [" + toparsemessagefallback;
-			}
-		}
-	}
-	return parsedmessage;
-}
-*/
 
 var catparsehelp = "<strong>Most things are parsed automatically! No need for tags, just write the link.<br>When posting links you can append </strong>#link_name_here <strong>to the link.</strong><br><strong>Example:</strong> http://exampleurl.com/somelink#Some_named_link <strong>makes a link with name:</strong> 'Some named link'.<br>";	
 

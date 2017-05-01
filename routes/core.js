@@ -58,8 +58,8 @@ function DateToInput(date, gmtoffset) {
 	var mm = date.getMonth() + 1;
 	var yyyy = date.getFullYear();
 	//no need for trailing zeros
-	//if(dd<10){dd="0"+dd} 
-	//if(mm<10){mm="0"+mm} 
+	if(dd<10){dd="0"+dd} 
+	if(mm<10){mm="0"+mm} 
 	//return yyyy+"-"+mm+"-"+dd;
 	var mn = date.getMinutes();
 	var hr = date.getHours();
@@ -89,8 +89,8 @@ function DateToOutput(date, gmtoffset) {
 	if (min < 10) {
 		min = "0" + min
 	}
-	//return dd + "." + mm + "." + yyyy + " " + hour + ":" + min;
-	return dd + "." + mm + "." + yyyy;
+	return dd + "." + mm + "." + yyyy + " " + hour + ":" + min;
+	//return dd + "." + mm + "." + yyyy;
 }
 
 function DateToTime(date, gmtoffset) {

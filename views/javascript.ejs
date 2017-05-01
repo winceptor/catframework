@@ -1,9 +1,13 @@
 <!-- javascript -->
 <script type="text/javascript" src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap-select.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/catparser.js"></script>
-<script src="/js/loading.js"></script>
+<script type="text/javascript" src="/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/catparser.js"></script>
+<script type="text/javascript" src="/js/loading.js"></script>
+<script type="text/javascript" src="/js/moment.min.js"></script>
+<script type="text/javascript" src="/js/locales.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+
 <script>
 	$(document).ready(function(){
 		if (window.opener==null) {
@@ -33,5 +37,15 @@
 		}
 	}
 </script>
+
+<script type="text/javascript">
+    $(function () {
+        $('.datetimepicker').datetimepicker({
+		    format: 'DD.MM.YYYY HH:mm'
+		});
+    });
+</script>
+
+
 
 <script src='https://www.google.com/recaptcha/api.js'></script>
