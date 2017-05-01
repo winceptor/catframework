@@ -59,13 +59,14 @@ var helmet = require('helmet')
 
 var moment = require('moment');
 
+/*
 var privateKey = fs.readFileSync('sslcert/server.key', 'utf8');
 var certificate = fs.readFileSync('sslcert/server.cert', 'utf8');
 var credentials = {
 	key: privateKey,
 	cert: certificate
 };
-
+*/
 
 
 var files = require('./routes/files');
@@ -78,30 +79,8 @@ var catparser = require('./routes/catparser');
 
 var routes = require('./routes/routes');
 
-/*
-var InstagramAPI = require('instagram-api');
-var instagramAPI = new InstagramAPI(instagram_access_token);
-
-//testing instagram api
-instagramAPI.userSelf().then(function(result) {
-	console.log("Got instagram access!");
-    console.log(result.data); // user info 
-    console.log("api limit: " + result.limit); // api limit 
-    console.log("api request remaining: " + result.remaining) // api request remaining 
-}, function(err){
-    console.log(err); // error info 
-});
-*/
 
 // configuration ===============================================================
-//Error handling, src: http://stackoverflow.com/a/14049430
-mongoose.connection.on("open", function(ref) {
-	return console.log("Connected to mongo server!".green);
-});
-mongoose.connection.on("error", function(err) {
-	console.log("Could not connect to mongo server!".yellow);
-	return console.log(err.message.red);
-});
 
 app.use(compression({
 	level: 3
