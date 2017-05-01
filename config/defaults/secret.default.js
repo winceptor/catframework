@@ -1,4 +1,4 @@
-module.exports={	
+module.exports = {
 	//SERVER
 	server_port: 80,
 	server_sslport: 443,
@@ -6,26 +6,32 @@ module.exports={
 	//DATABASE
 	db_database: 'mongodb://localhost:27017/localdatabase',
 	db_secretkey: "localdatabase",
-	
+
 	//EMAIL
 	email_host: 'localhost',
-    email_port: 465,
+	email_port: 465,
 	email_secure: true, // use SSL
 	email_user: 'user@email.com',
-    email_pass: 'password',
+	email_pass: 'password',
 	email_sender: 'Administrator',
-	
+
 	//CAPTCHA
 	captcha_api: 'https://www.google.com/recaptcha/api/siteverify',
 	captcha_sitekey: '',
-	captcha_secretkey: '',	
-	
+	captcha_secretkey: '',
+
 	//INSTAGRAM
 	instagram_client_id: '',
 	instagram_client_secret: '',
-	
 	instagram_access_token: '',
-	
+
 	//GOOGLEMAPS
-	google_maps_key: ''
-}
+	google_maps_key: '',
+	googleAuth: {
+		'clientID': '',
+		'clientSecret': '',
+		'callbackURL': ''
+	},
+
+	gmail_pass: ''
+};
