@@ -53,7 +53,7 @@ passport.use('local-signup', new LocalStrategy({
 
 			// check to see if theres already a user with that email
 			if (user) {
-				return done(null, false, req.flash('message', '###emailtakenerror###'));
+				return done(null, false, req.flash('error', '###email### ###alreadyexists###'));
 			} else {
 
 				// if there is no user with that email
@@ -94,10 +94,10 @@ passport.use('local-login',new LocalStrategy({
 		if(err) return done(err);
 
 		if(!user){
-			return done(null,false,req.flash('message','###usernameerror###'));
+			return done(null,false,req.flash('error','###usernameerror###'));
 		}
 		if(!user.validPassword(password)){
-			return done(null,false,req.flash('message','###passworderror###'));
+			return done(null,false,req.flash('error','###passworderror###'));
 		}
 
 		user.lastlogin = Date.now();
@@ -107,7 +107,7 @@ passport.use('local-login',new LocalStrategy({
 			if(err) return console.log(err);
 		});
 
-		req.flash('message','###loginsuccess###')
+		req.flash('success','###loginsuccess###')
 		return done(null,user);
 	});
 }));

@@ -22,7 +22,7 @@ function isLoggedIn(req, res, next) {
 // HOME PAGE (with login links) ========
 // =====================================
 router.get('/', function(req, res) {
-	res.render('index.ejs', { errors: req.flash('error'), message: req.flash('message') }); // load the index.ejs file
+	res.render('index.ejs', { errormessages: req.flash('error'), successmessages: req.flash('success') }); // load the index.ejs file
 });
 
 // =====================================
@@ -67,7 +67,8 @@ router.post('/signup', passport.authenticate('local-signup', {
 // we will use route middleware to verify this (the isLoggedIn function)
 router.get('/profile', isLoggedIn, function(req, res) {
 	res.render('profile.ejs', {
-		user : req.user // get the user out of session and pass to template
+		user : req.user, // get the user out of session and pass to template
+		errormessages: req.flash('error'), successmessages: req.flash('success')
 	});
 });
 
