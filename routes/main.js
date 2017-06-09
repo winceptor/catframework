@@ -80,7 +80,12 @@ router.get('/logout', function(req, res) {
 	res.redirect('/');
 });
 
-	
+
+router.get('/message',function(req,res,next){
+	var query = req.query.q || "";
+	console.log("logmessage: " + query);
+	res.redirect('/');
+});
 
 
 
