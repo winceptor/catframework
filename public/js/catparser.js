@@ -180,7 +180,7 @@ var gethtmlfor = function(tag, tagcontent, alt)
 		}
 		if (tag =="spimg")
 		{
-			htmlcode = "<img src='/img/spoiler.png' ssrc='" + tagcontent + "' class='resizeable spoiler thumbnailimage' onerror='imageerror(this);'>";
+			htmlcode = "<img src='/spoiler.png' ssrc='" + tagcontent + "' class='resizeable spoiler thumbnailimage' onerror='imageerror(this);'>";
 		}		
 		
 		if (tag =="wrap" )
