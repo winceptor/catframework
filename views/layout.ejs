@@ -23,13 +23,20 @@
 <body>
 	<% include ./header %>
 	
+	<hr>
+	
 	<div class="center">
+
 		<% include ./message %>
 		
 		<div id="loadingcontent">
 			<%- body -%>
 		</div>
 	</div>
+	<hr>
+	
+	<% include ./qr %>	
+	<hr>
 	
 	<% include ./footer %>
 	
@@ -38,8 +45,10 @@
 		<% include ./wip %>
 	<% } %>
 	
-	<% if (wip || true) { %>
+	<% if (wip || false) { %>
 		<% include ./ifb %>
 	<% } %>
+	
+
 </body>
 </html>

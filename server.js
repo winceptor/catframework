@@ -197,11 +197,11 @@ db.on('reconnected', function() {
 db.on('disconnected', function() {
 	console.log('MongoDB disconnected!');
 	db_ok = false;
-	mongoose.connect(secret.db_database, {
+/*	mongoose.connect(secret.db_database, {
 		server: {
-			auto_reconnect: true
+			auto_reconnect: false
 		}
-	});
+	});*/
 });
 mongoose.connect(secret.db_database, {
 	server: {

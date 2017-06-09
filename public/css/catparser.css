@@ -36,7 +36,7 @@
 }
 
 
-.thumbnail{
+.thumbnailimage{
 	display: block;
 	max-width:320px; 
 	max-height:240px;
@@ -108,4 +108,36 @@ video, audio{
 
 .parsed {
 	padding: 0px;
+	white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    display: block;
+}
+
+.parsed a, .parsed span, .parsed tr, .parsed td { white-space: pre; }
+
+.spoiler {
+	color: black;
+	display: inline-block;
+	background-color: black;
+	font-family: "Lucida Console", Monaco, monospace;
+}
+
+
+.greentext{
+	color: #789922;
+}
+.bluetext{
+	color: #226199;
+}
+.redtext{
+	color: #800;
+}
+
+.textwrap {
+    padding: 4px;
+    background-color: whitesmoke;
+    color: black;
 }

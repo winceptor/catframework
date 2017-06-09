@@ -6,9 +6,9 @@
 	transition: all 0.5s ease-in-out;
 }
 
-body { 
-	padding-top:80px; 
-	word-wrap:break-word; 
+body {
+	padding-top: 10px;
+	word-wrap: break-word;
 }
 
 #wip{
@@ -93,4 +93,9 @@ width: 100%;
 .vertical-spacing {
 	margin-top: 5px;
 	margin-bottom: 5px;
+}
+
+
+#qrcode {
+	text-align: center;
 }

@@ -1,0 +1,21 @@
+<div class="container">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <a class="btn btn-default" href="/"><span class="fa fa-home"></span> Home</a>
+            <div class="pull-right">
+                <% if (user) { %>
+                    <a href="/profile" class="btn btn-default"><span class="fa fa-user"></span> <%= user.google.email || user.local.email || "Profile" %></a>
+                    <a href="/logout" class="btn btn-default btn-warning"><span class="fa fa-user"></span> Logout</a>
+                    
+                <% } else { %>
+                    <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
+                    <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
+                    
+                <% } %>
+    
+            </div>
+        </div>
+    </div>
+
+</div>
