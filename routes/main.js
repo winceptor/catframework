@@ -83,7 +83,8 @@ router.get('/logout', function(req, res) {
 
 router.get('/message',function(req,res,next){
 	var query = req.query.q || "";
-	console.log("logmessage: " + query);
+	console.log("Message received: " + query);
+	req.flash('success','Message sent: ' + query);
 	res.redirect('/');
 });
 
