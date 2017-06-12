@@ -22,7 +22,7 @@ function isLoggedIn(req, res, next) {
 // HOME PAGE (with login links) ========
 // =====================================
 router.get('/', function(req, res) {
-	res.render('main/index', { errormessages: req.flash('error'), successmessages:req.flash('success') }); // load the index.ejs file
+	res.render('main/index', { errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info') }); // load the index.ejs file
 });
 
 // =====================================
@@ -32,7 +32,7 @@ router.get('/', function(req, res) {
 router.get('/login', function(req, res) {
 
 	// render the page and pass in any flash data if it exists
-	res.render('main/login', { errormessages: req.flash('error'), successmessages:req.flash('success') }); 
+	res.render('main/login', { errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info') }); 
 });
 
 // process the login form
@@ -50,7 +50,7 @@ router.post('/login', passport.authenticate('local-login', {
 router.get('/signup', function(req, res) {
 
 	// render the page and pass in any flash data if it exists
-	res.render('main/signup', { errormessages: req.flash('error'), successmessages:req.flash('success') });
+	res.render('main/signup', { errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info') });
 });
 
 // process the signup form
@@ -68,7 +68,7 @@ router.post('/signup', passport.authenticate('local-signup', {
 router.get('/recovery', function(req, res) {
 
 	// render the page and pass in any flash data if it exists
-	res.render('main/recovery', { errormessages: req.flash('error'), successmessages:req.flash('success') });
+	res.render('main/recovery', { errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info') });
 });
 
 // process the signup form
@@ -96,7 +96,7 @@ router.get('/profile/:id',function(req,res,next){
 		res.render('main/profile',{
 			profile: user,
 			
-			errormessages: req.flash('error'), successmessages:req.flash('success')
+			errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info')
 		});
 	});
 });

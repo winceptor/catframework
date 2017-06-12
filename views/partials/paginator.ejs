@@ -1,0 +1,22 @@
+<!-- paginator -->
+<% if (typeof query == "undefined") { query = ""; } %>
+<% if (typeof page == "undefined" || page=="") { page = 1; } %>
+<% if (typeof number == "undefined" || number=="") { number = default_searchlimit; } %>
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="text-center vertical-spacing">
+			<span>###showing###: <% if (total>number) { %><%= Math.min(number*(page-1)+1,total) %>-<%= Math.min(number*page,total) %><span class="text-muted"> (###total###: <%= total %>)</span><% } else { %><%= total %><% } %></span>
+		</div>
+		<div class="pull-left vertical-spacing">
+			<% if (page>1){ %>
+				<a role="button" href="?<%= 'q='+query+'&p='+(+page-1)+'&n='+number %>" class="btn btn-primary btn-sm">###prevpage###</a>
+			<% } %>
+		</div>
+		<div class="pull-right vertical-spacing">
+			<% if (total>number*page){ %>
+				<a role="button" href="?<%= 'q='+query+'&p='+(+page+1)+'&n='+number %>" class="btn btn-primary btn-sm pull-right">###nextpage###</a>
+			<% } %>
+		</div>
+	</div>
+</div>

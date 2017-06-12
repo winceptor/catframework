@@ -78,7 +78,7 @@ router.get('/files/*?',function(req,res,next){
 	
 	if (directory==path.join("./", ""))
 	{
-		for (k in explosedfolders)
+		for (var k in explosedfolders)
 		{
 			var file = explosedfolders[k];
 			var filepath = path.join(directory, file);
@@ -90,7 +90,7 @@ router.get('/files/*?',function(req,res,next){
 	}
 	else
 	{
-		for (k in files)
+		for (var k in files)
 		{
 			var file = files[k];
 			var filepath = path.join(directory, file);
@@ -110,12 +110,13 @@ router.get('/files/*?',function(req,res,next){
 	
 
 	
-	return res.render('admin/files',{
+	return res.render('main/files',{
 		data: data,
 		folder: folder,
 		total: files.length,
 		number: files.length,
-		denied: false 
+		denied: false,
+		errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info')
 	});
 });
 
@@ -160,90 +161,6 @@ router.get('/file/*?',function(req,res,next){
 	
 	 res.sendFile(file, {root: './'});
 });
-
-router.post('/uploadcv', multer({ dest: uploadTemp}).single('file'), function(req,res, next){
-	if (!req.user) { return res.denied("###denied###"); }
-	
-	var uid = req.user.id || null;
-	
-	var targetfolder = "";
-	if (uid) {
-		targetfolder = path.join(uploadDirectory, "users");
-		targetfolder = path.join(targetfolder, uid);
-	}
-	else {
-		targetfolder = path.join(uploadDirectory, "public");
-	}
-	
-	var file = req.file || null;
-	var folder = req.body.folder;
-	
-	fs.existsSync(targetfolder) || mkdirp.sync(targetfolder);
-	
-	var filename = file.originalname || "curriculum_vitae.pdf";
-	
-	var maxfilesize = 10000000;
-	if (file.size>maxfilesize || (file.mimetype!="application/pdf" && file.mimetype!="application/x-pdf") || path.extname(file.originalname)!=".pdf" ){
-		req.flash('error', '###cv### ###not### ###uploaded###!');
-		fs.unlinkSync(file.path);
-		return res.redirect(res.locals.referer);
-	}
-	
-	if (uid)
-	{
-		User.findById(uid, function(err,profile){
-			if(err) return next(err);
-			if (!profile)
-			{
-				req.flash('error', '###user### ###id### ###undefined###!');
-				return res.redirect(res.locals.referer);
-			}
-			
-			if (profile.cv && profile.cv!="") {
-				var oldcv = path.join(targetfolder, profile.cv);
-				
-				if (fs.existsSync(oldcv)){
-					fs.unlinkSync(oldcv);
-				}
-			}
-			
-			profile.cv = filename;
-			
-			fs.renameSync(file.path, path.join(targetfolder, filename));
-			
-			profile.save( 
-				function(err, results) {
-					if(err) return next(err);
-					if (!results)
-					{
-						req.flash('error', '###cv### ###not### ###uploaded###!');
-						return res.redirect(res.locals.referer);
-					}
-					profile.on('es-indexed', function(err, result){
-						if (err) return next(err);
-						
-
-						req.flash('success', '###cv### ###uploaded###');
-						
-						
-						//return res.redirect('/profile/' + req.params.id);
-										
-						return res.redirect("/user/profile");
-					});
-				}
-			);
-		});
-	}
-	else
-	{
-		return res.redirect("/user/profile");
-	}
-	
-	//res.end('success');
-	
-
-});
-
 
 router.post('/upload', multer({ dest: uploadTemp}).single('file'), function(req,res){
 	if (!res.locals.hasadmin) { return res.denied("###denied###"); }

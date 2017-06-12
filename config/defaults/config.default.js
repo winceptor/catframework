@@ -18,7 +18,8 @@ module.exports = {
 	//give admin rights to anyone when there is 0 admin users
 	zeroadmins_unrestricted: false,
 
-	default_language: 'english',
+	language_translator: true,
+	language_default: 'english',
 	language_choices: ["english", "finnish"],
 
 	log_filename: 'server.log'

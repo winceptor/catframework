@@ -28,6 +28,9 @@ var loadlanguages = function(callback) {
 loadlanguages();
 
 router.use(function(req, res, next) {
+	if (!config.language_translator) {
+		return next();
+	}
 	//console.log('Cookies: ', req.cookies);
 	if (req.cookies && req.cookies.language && languages_db[req.cookies.language])
 	{
@@ -36,11 +39,11 @@ router.use(function(req, res, next) {
 	}
 	else
 	{
-		res.cookie('language', config.default_language, { maxAge: 365 * 24 * 60 * 60 * 1000 });
-		res.locals.language = config.default_language;
+		res.cookie('language', config.language_default, { maxAge: 365 * 24 * 60 * 60 * 1000 });
+		res.locals.language = config.language_default;
 	}
 	
-	res.locals.default_language = config.default_language;
+	res.locals.language_default = config.language_default;
 	
 	res.locals.language_choices = config.language_choices;
 
@@ -55,7 +58,7 @@ router.use(function(req, res, next) {
 	var translate = function(input, lang)
 	{
 		var lang = lang || res.locals.language;
-		var deflang = res.locals.default_language;
+		var deflang = res.locals.language_default;
 		
 		if (input)
 		{
