@@ -177,9 +177,7 @@ router.use(function(req, res, next) {
 		}, function(err, count) {
 			if (!err && count === 0) {
 				res.locals.zeroadmins = true;
-				var problem = "WARNING! RUNNING WITHOUT ACCESS RESTRICTIONS: CREATE MAIN ADMIN USER";
-				req.flash('error', problem);
-				console.log(problem);
+				console.log("WARNING! RUNNING WITHOUT ACCESS RESTRICTIONS: CREATE MAIN ADMIN USER");
 				next();
 			}
 			else {

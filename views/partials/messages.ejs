@@ -1,0 +1,46 @@
+<!-- show any messages that come back with authentication -->
+<!-- messages -->
+<div class="container">
+	<% if (typeof zeroadmins != 'undefined') { %>
+		<% if (zeroadmins) { %>
+			<div class="alert alert-danger vertical-spacing">
+			  <span class="strong">Warning! Unrestricted mode, please create new user and claim this page!</span>
+			</div>
+		<% } %>
+	<% } %>
+
+	<% if (typeof successmessages != 'undefined') { %>
+		<% if (successmessages.length > 0) { %>
+			<div class="alert alert-success alert-dismissible vertical-spacing">
+			  <button onclick="$(this).parent().hide();" type="button" class="close" data-dismmiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			  <%- successmessages %>
+			</div>
+		<% } %>
+	<% } %>
+	
+	<% if (typeof errormessages != 'undefined') { %>
+		<% if (errormessages.length > 0) { %>
+			  <div class="alert alert-danger alert-dismissible vertical-spacing">
+				<button onclick="$(this).parent().hide();" type="button" class="close" data-dismmiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<%- errormessages %>
+			</div>
+		<% } %>
+	<% } %>
+		
+	<% if (typeof infomessages != 'undefined') { %>
+		<% if (infomessages.length > 0) { %>
+			<div class="alert alert-info alert-dismissible vertical-spacing">
+			  <button onclick="$(this).parent().hide();" type="button" class="close" data-dismmiss="info" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			  <%- infomessages %>
+			</div>
+		<% } %>
+	<% } %>
+
+</div>
+
