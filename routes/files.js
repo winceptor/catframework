@@ -53,6 +53,7 @@ router.use('/files',function(req,res,next){
 	next();
 });
 
+
 var explosedfolders = ["uploads", "log", "public"];
 //expose selected folders to allow file read
 
@@ -63,7 +64,7 @@ router.use('/files/log',function(req,res,next){
 	express.static(logDirectory)(req,res,next);
 });
 
-router.get('/files/*?',function(req,res,next){
+var filesfunction = function(req,res,next) {
 	var folder = req.params[0] || "";
 	//var directory = path.join(uploadDirectory, folder);
 	var directory = path.join("./", folder);
@@ -104,12 +105,9 @@ router.get('/files/*?',function(req,res,next){
 			{
 				data.push(entry);
 			}
+		}
 	}
-	}
-	
-	
 
-	
 	return res.render('main/files',{
 		data: data,
 		folder: folder,
@@ -118,6 +116,14 @@ router.get('/files/*?',function(req,res,next){
 		denied: false,
 		errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info')
 	});
+}
+
+router.get('/files',function(req,res,next){
+	filesfunction(req, res, next);
+});
+
+router.get('/files/*?',function(req,res,next){
+	filesfunction(req, res, next);
 });
 
 router.post('/remove/*?',function(req,res,next){

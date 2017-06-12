@@ -3,6 +3,13 @@
     <div class="row">
         <div class="col-xs-12">
             <a class="btn btn-default" href="/"><span class="fa fa-home"></span> Home</a>
+            
+            <% if (user && hasadmin) { %>
+                <a class="btn btn-warning" href="/files"><span class="fa fa-folder"></span> Files</a>
+                <% if (zeroadmins) { %>
+                    <a class="btn btn-danger" href="/claim"><span class="fa fa-warning"></span> Claim</a>
+                <% } %>
+            <% } %>
             <div class="pull-right">
                 <% if (user) { %>
                     <a href="/profile" class="btn btn-default"><span class="fa fa-user"></span> <%= user.google.email || user.local.email || "Profile" %></a>

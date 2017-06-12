@@ -138,4 +138,27 @@ router.get('/message',function(req,res,next){
 });
 
 
+router.get('/claim',function(req,res,next){
+	if (!req.user || !res.locals.hasadmin) {
+		return res.denied("###denied###");
+	}
+	User.findById({_id:req.user.id}).exec(function(err, user) {
+		if(err) return next(err);
+		if (!user)
+		{
+			console.log("error null user");
+			return next();
+		}
+		user.admin = true;
+		user.save(function(err) {
+			if(err) return next(err);
+			
+			req.flash('success','Claimed page ownership by: ' + user.local.email);
+			res.redirect('/');
+		});
+		
+	});
+});
+	
+
 module.exports=router;

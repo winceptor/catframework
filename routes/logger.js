@@ -31,8 +31,8 @@ morgan.token('logmsg', function(req, res) {
 });
 
 morgan.token('username', function(req, res) {
-	if (req.user && req.user.email) {
-		return "(" + req.user.email + ")" || "(unknown)";
+	if (req.user && req.user.local && req.user.local.email) {
+		return "(" + req.user.local.email + ")" || "(unknown)";
 	}
 	return "(visitor)";
 });

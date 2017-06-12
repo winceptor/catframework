@@ -197,6 +197,9 @@ router.use(function(req, res, next) {
 
 	var gmtoffset = res.locals.gmtoffset || 0;
 
+	
+	res.locals.paginator_choices = config.paginator_choices || [10,30,50,100,250,1000];
+	res.locals.paginator_default = config.paginator_default || config.paginator_choices[0] || 30;
 
 	res.locals.logfile = config.log_filename;
 

@@ -21,6 +21,9 @@ module.exports = {
 	language_translator: true,
 	language_default: 'english',
 	language_choices: ["english", "finnish"],
-
+	
+	paginator_choices: [10,30,100],
+	paginator_default: 30,
+	
 	log_filename: 'server.log'
 }
