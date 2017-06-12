@@ -22,7 +22,7 @@ function isLoggedIn(req, res, next) {
 // HOME PAGE (with login links) ========
 // =====================================
 router.get('/', function(req, res) {
-	res.render('index.ejs', { errormessages: req.flash('error'), successmessages: req.flash('success') }); // load the index.ejs file
+	res.render('main/index', { errormessages: req.flash('error'), successmessages:req.flash('success') }); // load the index.ejs file
 });
 
 // =====================================
@@ -32,7 +32,7 @@ router.get('/', function(req, res) {
 router.get('/login', function(req, res) {
 
 	// render the page and pass in any flash data if it exists
-	res.render('login.ejs', { message: req.flash('loginMessage') }); 
+	res.render('main/login', { errormessages: req.flash('error'), successmessages:req.flash('success') }); 
 });
 
 // process the login form
@@ -50,7 +50,7 @@ router.post('/login', passport.authenticate('local-login', {
 router.get('/signup', function(req, res) {
 
 	// render the page and pass in any flash data if it exists
-	res.render('signup.ejs', { message: req.flash('signupMessage') });
+	res.render('main/signup', { errormessages: req.flash('error'), successmessages:req.flash('success') });
 });
 
 // process the signup form
@@ -60,16 +60,57 @@ router.post('/signup', passport.authenticate('local-signup', {
 	failureFlash : true // allow flash messages
 }));
 
+
+// =====================================
+// FORGOT ==============================
+// =====================================
+// show the signup form
+router.get('/recovery', function(req, res) {
+
+	// render the page and pass in any flash data if it exists
+	res.render('main/recovery', { errormessages: req.flash('error'), successmessages:req.flash('success') });
+});
+
+// process the signup form
+router.post('/recovery', function(req,res,next){
+	console.log("Recover email: " + req.body.email);
+	res.redirect('/');
+});
+
 // =====================================
 // PROFILE SECTION =====================
 // =====================================
+
+router.get('/profile/:id',function(req,res,next){
+	if (!req.params.id) {
+		return next();
+	}
+	User.findById({_id:req.params.id}).populate('userbadges').exec(function(err, user) {
+		if(err) return next(err);
+		if (!user)
+		{
+			console.log("error null user");
+			return next();
+		}
+
+		res.render('main/profile',{
+			profile: user,
+			
+			errormessages: req.flash('error'), successmessages:req.flash('success')
+		});
+	});
+});
+
 // we will want this protected so you have to be logged in to visit
 // we will use route middleware to verify this (the isLoggedIn function)
 router.get('/profile', isLoggedIn, function(req, res) {
-	res.render('profile.ejs', {
-		user : req.user, // get the user out of session and pass to template
-		errormessages: req.flash('error'), successmessages: req.flash('success')
-	});
+	if (req.user) {
+		res.redirect('/profile/' + req.user.id);
+	}
+	else
+	{
+		res.redirect('/');
+	}
 });
 
 // =====================================
@@ -81,15 +122,20 @@ router.get('/logout', function(req, res) {
 });
 
 
-router.get('/message',function(req,res,next){
+router.get('/search',function(req,res,next){
 	var query = req.query.q || "";
-	console.log("Message received: " + query);
-	req.flash('success','Message sent: ' + query);
+
 	res.redirect('/');
 });
 
+router.get('/message',function(req,res,next){
+	var query = req.query.q || "";
 
+	req.flash('success','Message sent: ' + query);
+	res.redirect('/');
+	console.log("Message received: " + query);
 
+});
 
 
 module.exports=router;
