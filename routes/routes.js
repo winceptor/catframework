@@ -6,10 +6,6 @@ var router = express.Router();
 var secret = require('../config/secret');
 var config = require('../config/config');
 
-var coreRoutes=require('./core');
-
-var filesRoutes=require('./files');
-
 var mainRoutes=require('./main');
 
 
@@ -35,36 +31,6 @@ if (wip) {
 		process.exit(0);
 	})
 }
-
-
-//VARIOUS RESPONSES
-router.use(function(req,res,next){
-	//fatal error
-	res.fatalerror = function(req, res, err) {
-		var content = "ERROR" + " 400 - " + "Something went terribly wrong! Please contact administrator!";
-		return res.status(400).render('main/messagepage',{result: 'error', content: content, errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info'), badgemessages:req.flash('badges')});
-	}
-
-	//result message
-	res.resultmessage = function(result, content) {
-		return res.render('main/messagepage',{result: result, content: content, closable: true, errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info'), badgemessages:req.flash('badges')});
-	}
-	
-	res.missing = function(msg) {
-		var content = "ERROR" + " 404 - " + msg;
-		return res.status(404).render('main/messagepage',{result: 'error', content: content, errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info'), badgemessages:req.flash('badges')});
-	}
-	
-	res.denied = function(msg) {
-		var content = "ERROR" + " 403 - " + msg;
-		return res.status(403).render('main/messagepage',{result: 'error', content: content, errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info'), badgemessages:req.flash('badges')});
-	}
-	next();
-});
-
-router.use(coreRoutes);
-
-router.use(filesRoutes);
 
 router.use(mainRoutes);
 

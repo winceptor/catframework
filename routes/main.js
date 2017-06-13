@@ -128,13 +128,16 @@ router.get('/search',function(req,res,next){
 	res.redirect('/');
 });
 
+
 router.get('/message',function(req,res,next){
 	var query = req.query.q || "";
 
 	req.flash('success','Message sent: ' + query);
-	res.redirect('/');
+	
+	req.broadcast('message', query);
+	
 	console.log("Message received: " + query);
-
+	return res.redirect('/'); 
 });
 
 

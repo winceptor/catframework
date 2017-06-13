@@ -107,12 +107,13 @@ var filesfunction = function(req,res,next) {
 			}
 		}
 	}
-
+	
+	var total = data.length + folder.length;
 	return res.render('main/files',{
 		data: data,
 		folder: folder,
-		total: files.length,
-		number: files.length,
+		total: total,
+		number: total,
 		denied: false,
 		errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info')
 	});

@@ -20,56 +20,57 @@
 		</div>
 		
 		<hr class="simple-divider">
-		
-		<div class="container">
-			<% if (data.length>0) { %>
-				<div class="searchresults">
-					<% if (denied) { %>
-						<div class="text-center">
-							###denied###
-						</div>
-					
-					
-					<% } else { %>
-						<% for (var i=0;i<data.length;i++) { var file = data[i]; if (typeof file != "undefined") { %>
-							<div class="row">
-								<div class="col-sm-12">
-									<div class="file-entry" <% if ( (Math.ceil(i/2)==Math.floor(i/2)) ) { %>style="background: lightgrey;"<% } %>>
+	</div>
+	
+	<div class="container">
+		<% if (data.length>0) { %>
+			<div class="searchresults">
+				<% if (denied) { %>
+					<div class="text-center">
+						###denied###
+					</div>
+				
+				
+				<% } else { %>
+					<% for (var i=0;i<data.length;i++) { var file = data[i]; if (typeof file != "undefined") { %>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="file-entry" <% if ( (Math.ceil(i/2)==Math.floor(i/2)) ) { %>style="background: lightgrey;"<% } %>>
+									
+									<a role="button" href="/files/<%= folder %><%= file.file %><% if (!file.dir) { %>" target="blank"<% } else { %>/"<% } %>><%= file.file %><% if (file.dir) { %>/<% } %></a>
+									
 										
-										<a role="button" href="/files/<%= folder %><%= file.file %><% if (!file.dir) { %>" target="blank"<% } else { %>/"<% } %>><%= file.file %><% if (file.dir) { %>/<% } %></a>
+									
+									<span class="text-right">
+										<span class=""><% if (file.dir) { %>DIR<% } else { %><%= filesizebeautify(file.stats.size) %><% } %></span>
 										
-											
 										
-										<span class="text-right">
-											<span class=""><% if (file.dir) { %>DIR<% } else { %><%= filesizebeautify(file.stats.size) %><% } %></span>
+										
+										<span class="pull-right">
+										
+											<% if (!file.dir && file.file!=logfile) { %>
+												<span>
+													<a role="button" class="btn-admin" onclick="confirm_command('###delete### <%= file.file %>', '/remove/<%= folder %><%= file.file %>');">###delete###</a>
+												</span>
+											<% } %>
 											
-											
-											
-											<span class="pull-right">
-											
-												<% if (!file.dir && file.file!=logfile) { %>
-													<span>
-														<a role="button" class="btn-admin" onclick="confirm_command('###delete### <%= file.file %>', '/remove/<%= folder %><%= file.file %>');">###delete###</a>
-													</span>
-												<% } %>
-												
-												<%= DateToOutput(file.stats.birthtime) %>
-											
-											</span>
+											<%= DateToOutput(file.stats.birthtime) %>
+										
 										</span>
-										
-									</div>
+									</span>
+									
 								</div>
 							</div>
-							
-						<% } } %>
-						<hr class="simple-divider">
-					
-					<% } %>
-				</div>
-			  <% } %>
-		 </div>
-	</div>
+						</div>
+						
+					<% } } %>
+					<hr class="simple-divider">
+				
+				<% } %>
+			</div>
+		  <% } %>
+	 </div>
 </div>
+
 
 <% include ../partials/paginator %>

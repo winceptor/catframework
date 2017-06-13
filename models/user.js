@@ -8,7 +8,8 @@ var Schema= mongoose.Schema;
 
 // define the schema for our user model
 var userSchema = Schema({
-	admin:{ type: Boolean, default: false },
+	socket_hash: String,
+    admin:{ type: Boolean, default: false },
     local            : {
         email        : String,
         password     : String,

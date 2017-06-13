@@ -164,6 +164,34 @@ function InputToOutput(date) {
 	return DateToOutput(InputToDate(date));
 }
 
+
+//VARIOUS RESPONSES
+router.use(function(req,res,next){
+	//fatal error
+	res.fatalerror = function(req, res, err) {
+		var content = "ERROR" + " 400 - " + "Something went terribly wrong! Please contact administrator!";
+		return res.status(400).render('main/messagepage',{result: 'error', content: content, errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info'), badgemessages:req.flash('badges')});
+	}
+
+	//result message
+	res.resultmessage = function(result, content) {
+		return res.render('main/messagepage',{result: result, content: content, closable: true, errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info'), badgemessages:req.flash('badges')});
+	}
+	
+	res.missing = function(msg) {
+		var content = "ERROR" + " 404 - " + msg;
+		return res.status(404).render('main/messagepage',{result: 'error', content: content, errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info'), badgemessages:req.flash('badges')});
+	}
+	
+	res.denied = function(msg) {
+		var content = "ERROR" + " 403 - " + msg;
+		return res.status(403).render('main/messagepage',{result: 'error', content: content, errormessages: req.flash('error'), successmessages:req.flash('success'), infomessages:req.flash('info'), badgemessages:req.flash('badges')});
+	}
+	next();
+});
+
+
+
 //UNRESTRICTED MODE MIDDLEWARE
 router.use(function(req, res, next) {
 	res.locals.zeroadmins = false;
@@ -336,7 +364,6 @@ router.use(function(req, res, next) {
 
 	next();
 });
-
 
 
 module.exports = router;

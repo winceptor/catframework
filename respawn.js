@@ -1,4 +1,7 @@
-console.log("#############START#############");
+var printprefix = "# ";
+var printdivider = "#############RESPAWN###########";
+
+console.log(printdivider);
 
 var ejs = require('ejs');
 var fs = require('fs');
@@ -8,11 +11,11 @@ var fs = require('fs');
 var checkconfigs = require('./routes/configs');
 var configs = ["secret", "config", "languages"];
 if (!checkconfigs(configs)) {
-	console.log("Problem with config files! Check ./config files and restart!");
+	console.log(printprefix + "Problem with config files! Check ./config files and restart!");
 	return;
 }
 else {
-	console.log("Configs OK. Proceeding with load...");
+	//console.log("Configs OK. Proceeding with load...");
 }
 
 var config = require('./config/config');
@@ -69,7 +72,7 @@ if (config.notify_crashes) {
 			if (error) {
 				console.log(error);
 			}
-			console.log('Message sent: ' + info.response);
+			console.log(printprefix + 'Message sent: ' + info.response);
 		});
 	}
 }
@@ -86,19 +89,15 @@ monitor.on('stderr', function(data) {
 
 
 monitor.on('start', function() {
-	console.log("###############################");
-	console.log("Started: " + filename + " (" + appname + ")");
-	console.log("###############################");
+	console.log(printprefix + "Started: " + filename + " (" + appname + ")");
 })
 
 
 monitor.on('stop', function() {
-	console.log("###############################");
-	console.log("Stopped: " + filename + " (" + appname + ")");
+	console.log(printprefix + "Stopped: " + filename + " (" + appname + ")");
 	if (config.notify_crashes) {
 		notifyadmin(lasterror);
 	}
-	console.log("###############################");
 })
 
 monitor.start() // spawn and watch

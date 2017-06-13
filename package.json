@@ -37,7 +37,8 @@
     "passport-twitter": "^1.0.4",
     "request": "^2.79.0",
     "respawn": "^2.5.0",
-    "session": "^0.1.0"
+    "session": "^0.1.0",
+    "socket.io": "^2.0.3"
   },
   "devDependencies": {},
   "scripts": {

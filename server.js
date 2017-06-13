@@ -1,19 +1,23 @@
 // server.js
 var servicename = process.env.NAME || "server.js";
+var printprefix = "# ";
+var printdivider = "##############APP##############";
 
+//start load
+console.log(printdivider);
 
-console.log("Starting service: " + servicename);
-//console.log("###############################");
+console.log(printprefix + "Starting service: " + servicename);
+//console.log(printdivider);
 
 //check for configs before loading anything, create new configs if missing
 var checkconfigs = require('./routes/configs');
 var configs = ["secret", "config", "languages"];
 if (!checkconfigs(configs)) {
-	console.log("Problem with config files! Check ./config files and restart!");
+	console.log(printprefix + "Problem with config files! Check ./config files and restart!");
 	return;
 }
 else {
-	console.log("Configs OK. Proceeding with load...");
+	//console.log(printprefix + "Configs OK. Proceeding with load...");
 }
 
 var config = require('./config/config');
@@ -21,15 +25,13 @@ var secret = require('./config/secret');
 
 var wip = config.wip || false;
 if (wip) {
-	console.log("Warning: Work in progress = true");
+	console.log(printprefix + "Warning: Work in progress = true");
 }
-//console.log("###############################");
+//console.log(printdivider);
 
 var server_port = process.env.PORT || secret.server_port || 8080;
 var server_sslport = process.env.SSLPORT || secret.server_sslport || 8088;
 var server_ip = process.env.IP || secret.server_ip || "localhost";
-
-//var instagram_access_token = secret.instagram_access_token || '';
 
 // set up ======================================================================
 var fs = require('fs');
@@ -40,6 +42,9 @@ var app = express();
 
 var http = require('http');
 var https = require('https');
+
+var server = http.createServer(app);
+var io = require('socket.io')(server);
 
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -75,7 +80,11 @@ var logger = require('./routes/logger');
 var translator = require('./routes/translator');
 var catparser = require('./routes/catparser');
 
+var sockets = require('./routes/sockets')(io);
+
 //var mapping = require('./routes/mapping');
+
+var core = require('./routes/core');
 
 var routes = require('./routes/routes');
 
@@ -97,7 +106,6 @@ app.use('/fonts', express.static(__dirname + '/node_modules/bootstrap/fonts')); 
 
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); // redirect JS jQuery
 app.use('/js', express.static(__dirname + '/node_modules/moment/min')); // redirect JS moment
-
 
 app.use('/js', express.static(__dirname + '/node_modules/eonasdan-bootstrap-datetimepicker/build/js')); // redirect datetimepicker JS
 app.use('/css', express.static(__dirname + '/node_modules/eonasdan-bootstrap-datetimepicker/build/css')); // redirect CSS datetimepicker
@@ -127,7 +135,7 @@ app.use(function(req, res, next) {
 				autoReconnect: true
 			})
 		})(req, res, next);
-		//console.log("Sessions active.");
+		//console.log(printprefix + "Sessions active.");
 	}
 	else {
 		session({
@@ -143,59 +151,53 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
+//var io = socketio.listen(httpServer);
+//io.set('log level', 0);
+
 
 //core middleware
 app.use(logger);
 
+//core
+app.use(core);
+
 //additional core middleware
 app.use(translator);
 app.use(catparser);
+app.use(files);
+app.use(sockets);
 
 //pages
 app.use(routes);
 
+//finished loading app
+console.log(printdivider);
 
 // connect to our database
 var db_ok = false;
-/*
-mongoose.connect(secret.db_database, function(err) {
-	if (err) {
-		console.log("Failed to connect to: " + secret.db_database);
-		db_ok = false;
-		console.log("##############END##############");
-	}
-	else {
-		console.log("Connected to the database!");
-		db_ok = true;
-		console.log("##############END##############");
-	}
-});
-*/
-
-
 // database ======================================================================
 // connect to our database and handle reconnects http://stackoverflow.com/a/17093472
 var db = mongoose.connection;
 db.on('connecting', function() {
-	console.log('connecting to MongoDB...');
+	//console.log(printprefix + 'connecting to MongoDB...');
 });
 db.on('error', function(error) {
-	console.error('Error in MongoDb connection: ' + error);
+	//console.error('Error in MongoDb connection: ' + error);
 	mongoose.disconnect();
 });
 db.on('connected', function() {
-	console.log('MongoDB connected!');
+	console.log(printprefix + 'MongoDB connected!');
 	db_ok = true;
 });
 db.once('open', function() {
-	console.log('MongoDB connection opened!');
+	//console.log(printprefix + 'MongoDB connection opened!');
 });
 db.on('reconnected', function() {
-	console.log('MongoDB reconnected!');
+	//console.log(printprefix + 'MongoDB reconnected!');
 	db_ok = true;
 });
 db.on('disconnected', function() {
-	console.log('MongoDB disconnected!');
+	console.log(printprefix + 'MongoDB disconnected!');
 	db_ok = false;
 /*	mongoose.connect(secret.db_database, {
 		server: {
@@ -210,10 +212,9 @@ mongoose.connect(secret.db_database, {
 });
 
 // launch ======================================================================
-var httpServer = http.createServer(app);
-httpServer.listen(server_port, server_ip, function(err) {
+server.listen(server_port, server_ip, function(err) {
 	if (err) throw err;
-	console.log("HTTP server is running on: " + server_ip + ":" + server_port);
+	console.log(printprefix + "HTTP server is running on: " + server_ip + ":" + server_port);
 });
 /*
 var httpsServer = https.createServer(credentials, app);
@@ -222,3 +223,4 @@ httpsServer.listen(server_sslport, server_ip, function(err){
 	console.log("HTTPS server is running on: " + server_ip + ":" + server_sslport);
 });
 */
+

@@ -14,7 +14,7 @@ var loadlanguages = function(callback) {
 		});
 		languages_db = JSON.parse(data);
 		//console.log(languages);
-		console.log("Loaded translation file");
+		//console.log("Loaded translation file");
 		return languages_db;
 	}
 	catch (err)

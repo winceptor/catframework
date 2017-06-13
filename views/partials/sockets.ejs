@@ -1,0 +1,27 @@
+<% if (typeof socket_hash == "undefined") { socket_hash = ''; } %>
+<% if (typeof user == "undefined") { user_id = ''; } else { user_id = user._id; } %>
+
+
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script>  
+    var socket = io.connect();
+    socket.on('connect', function(result) {
+    	var data = {user_id: '<%= user_id %>', socket_hash: '<%= socket_hash %>'};
+    	//console.log(data);
+        socket.emit('identify', data);
+    });
+
+    socket.on('identified', function(result) {
+        console.log("Identified: " + JSON.stringify(result));
+    });
+    
+    socket.on('connections', function(number) {
+        console.log("Connections number: " + number);
+    });
+    
+    socket.on('message', function(message) {
+    	console.log("Message: " + message);
+        alert(message);
+    });
+    
+</script>
