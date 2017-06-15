@@ -65,13 +65,13 @@ var socketsinit = function(io) {
                         //socket.userdata = userdata;
                         //socket.user = user;
                         
-                        console.log("Identified socket as: " + user.local.email);
+                        //console.log("Identified socket as: " + user.local.email);
                         socket.emit('identified', userdata);
                         return true;
                     }
                     else
                     {
-                        console.log("Identified socket as: (unknown)");
+                        //console.log("Identified socket as: (unknown)");
                 	    socket.emit('identified', false);
                     }
             	});
@@ -79,7 +79,7 @@ var socketsinit = function(io) {
             }
             else
             {
-                console.log("Identified socket as: (visitor)");
+                //console.log("Identified socket as: (visitor)");
         	    socket.emit('identified', false);
             }
             

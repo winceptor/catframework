@@ -1,28 +1,33 @@
 <div class="container">
 
-    <div class="row">
+    <div class="row vertical-spacing">
         <div class="col-xs-12">
-            <a class="btn btn-default" href="/"><span class="fa fa-home"></span> Home</a>
+            <a class="btn btn-default" href="/"><span class="fa fa-home"></span> ###home###</a>
             
-            <% if (user && hasadmin) { %>
-                <a class="btn btn-warning" href="/files"><span class="fa fa-folder"></span> Files</a>
-                <% if (zeroadmins) { %>
-                    <a class="btn btn-danger" href="/claim"><span class="fa fa-warning"></span> Claim</a>
-                <% } %>
-            <% } %>
             <div class="pull-right">
                 <% if (user) { %>
-                    <a href="/profile" class="btn btn-default"><span class="fa fa-user"></span> <%= user.google.email || user.local.email || "Profile" %></a>
-                    <a href="/logout" class="btn btn-default btn-warning"><span class="fa fa-user"></span> Logout</a>
+                    <a href="/profile" class="btn btn-default"><span class="fa fa-user"></span> <%= user.google.email || user.local.email || "###profile###" %></a>
+                    <a href="/logout" class="btn btn-default btn-warning"><span class="fa fa-user"></span> ###logout###</a>
                     
                 <% } else { %>
-                    <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
-                    <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
+                    <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> ###login###</a>
+                    <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> ###signup###</a>
                     
                 <% } %>
     
             </div>
         </div>
     </div>
+  
+    <% if (user && hasadmin) { %>
+    <div class="row vertical-spacing">
+        <div class="col-xs-12">
+            <a class="btn btn-warning" href="/files"><span class="fa fa-folder"></span> ###files###</a>
+            <% if (zeroadmins) { %>
+                <a class="btn btn-danger" href="/claim"><span class="fa fa-warning"></span> Claim</a>
+            <% } %>
+        </div>
+    </div>
+    <% } %>
 
 </div>

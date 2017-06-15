@@ -164,6 +164,43 @@ function InputToOutput(date) {
 	return DateToOutput(InputToDate(date));
 }
 
+function DateToSimple(date, gmtoffset) {
+	var gmtoffset = gmtoffset || 0;
+	if (!date || date == "" || date.length < 3) {
+		return "";
+	}
+	var date = new Date(Date.parse(date));
+	var now = Date.now();
+	var diff = now - date;
+
+	var sec = diff/1000;
+	var min = sec/60;
+	var hour = min/60;
+	var dd = hour/24;
+	var mm = dd/30;
+	var yyyy = dd/365;
+	
+	if (yyyy>=1) {
+		return Math.round(yyyy) + " ###years### ###ago###";
+	}
+	if (mm>=1) {
+		return Math.round(mm) + " ###month### ###ago###";
+	}
+	if (dd>=1) { 
+		return Math.round(dd) + " ###days### ###ago###";
+	}
+	if (hour>=1) {
+		return Math.round(hour) + " ###hours### ###ago###";
+	}
+	if (min>=1) {
+		return Math.round(min) + " ###minutes### ###ago###";
+	}
+	if (sec>=1) {
+		return Math.round(sec) + " ###seconds### ###ago###";
+	}
+	return "###moments### ###ago###";
+}
+
 
 //VARIOUS RESPONSES
 router.use(function(req,res,next){
@@ -235,11 +272,12 @@ router.use(function(req, res, next) {
 	res.locals.gmtclient = gmtoffsetcookie || config.gmt_default || 0;
 	res.locals.gmtclient = parseInt(res.locals.gmtclient);
 
+	/*
 	if (req.query && req.query.gmtoffset) {
 		var gmtoffsetminutes = parseInt(req.query.gmtoffset);
 		gmtoffset = -gmtoffsetminutes / 60;
 		res.locals.gmtclient = gmtoffset;
-	}
+	}*/
 
 	res.cookie('gmtoffset', res.locals.gmtclient, {
 		maxAge: 365 * 24 * 60 * 60 * 1000
@@ -268,8 +306,10 @@ router.use(function(req, res, next) {
 	res.locals.InputToOutput = function(date) {
 		return InputToOutput(date, gmtoffset);
 	}
-
-
+	
+	res.locals.DateToSimple = function(date) {
+		return DateToSimple(date, gmtoffset);
+	}
 
 	var LastDay = new Date();
 	LastDay.setDate(LastDay.getDate() - 1);

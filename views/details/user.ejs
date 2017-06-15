@@ -1,0 +1,21 @@
+<!-- details/user.ejs -->
+<% if (typeof profile == "undefined") { profile = false; } %>
+
+<% if (profile) { %>
+ 
+    <div class="well">
+        <h3><span class="fa fa-user"></span> Local</h3>
+
+        <p>
+            <strong>###id###</strong>: <%= profile._id %><br>
+            <strong>###email###</strong>: <%= profile.local.email %><br> 
+        </p>        
+
+    </div>
+<% } else { %>
+    <div class="well">
+        <h3><span class="alert"></span> ###profile### ###invalid### </h3>
+        
+    </div>
+
+<% } %>

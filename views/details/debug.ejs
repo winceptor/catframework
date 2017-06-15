@@ -1,0 +1,17 @@
+<!-- details/debug.ejs -->
+<% if (typeof debug == "undefined") { debug = false; } %>
+
+<% if (debug) { %>
+    <% if (debug._doc) { var variables = debug; } else { var variables = debug; } %>
+    <div class="well">
+		<% Object.keys(variables).forEach(function(key,index) { var value = debug[key]; %>
+			<div><strong><%= key %></strong>: <%= value %></div>
+		<% }); %>
+	</div>
+<% } else { %>
+    <div class="well">
+        <h3><span class="alert"></span> ###invalid### </h3>
+        
+    </div>
+
+<% } %>

@@ -10,7 +10,7 @@ var fs = require('fs')
 var morgan = require('morgan')
 var path = require('path')
 
-var config = require('../config/config');
+//var config = require('../config/config');
 
 var logDirectory = path.join("./", 'log')
 
@@ -48,29 +48,27 @@ morgan.token('timestamp', function(req, res) {
 
 // setup the loggers
 
-if (config.wip || true) {
-	router.use('/ifb', morgan(':datestamp :timestamp :remote-addr :remote-user :username [IFB] [:status] :url - :response-time (ms) ":logmsg"'));
-	router.use('/ifb', morgan(':timestamp :remote-addr :remote-user :username [IFB] [:status] :url - :response-time (ms) ":logmsg"', {
-		stream: accessLogStream
-	}));
+router.use('/ifb', morgan(':datestamp :timestamp :remote-addr :remote-user :username [IFB] [:status] :url - :response-time (ms) ":logmsg"'));
+router.use('/ifb', morgan(':timestamp :remote-addr :remote-user :username [IFB] [:status] :url - :response-time (ms) ":logmsg"', {
+	stream: accessLogStream
+}));
 
-	router.post('/ifb', function(req, res, next) {
-		if (req && req.body && req.body.ifbmsg && req.body.ifbmsg.length <= 1000) {
-			var ifbmsg = req.body.ifbmsg || "";
-			ifbmsg = ifbmsg.replace(/[\r\n"]+/g, " ");
-			ifbmsg = ifbmsg.replace(/["]+/g, "'");
-			res.locals.ifbmsg = ifbmsg;
-			req.flash('success', '###feedback### ###saved###');
-		}
-		else {
-			res.locals.ifbmsg = "[error handling message]";
-			req.flash('error', '###feedback### ###not### ###saved###');
-		}
-		console.log(res.locals.referer);
-		var referer = req.header('Referer') || '/';
-		return res.redirect(referer);
-	});
-}
+router.post('/ifb', function(req, res, next) {
+	if (req && req.body && req.body.ifbmsg && req.body.ifbmsg.length <= 1000) {
+		var ifbmsg = req.body.ifbmsg || "";
+		ifbmsg = ifbmsg.replace(/[\r\n"]+/g, " ");
+		ifbmsg = ifbmsg.replace(/["]+/g, "'");
+		res.locals.ifbmsg = ifbmsg;
+		req.flash('success', '###feedback### ###saved###');
+	}
+	else {
+		res.locals.ifbmsg = "[error handling message]";
+		req.flash('error', '###feedback### ###not### ###saved###');
+	}
+	console.log(res.locals.referer);
+	var referer = req.header('Referer') || '/';
+	return res.redirect(referer);
+});
 
 
 router.use(morgan(':datestamp :timestamp :remote-addr :remote-user :username [:method] [:status] :url - :response-time (ms)'));
