@@ -153,7 +153,9 @@
 		"ago": "ago",
 		"awarded": "Awarded",
 		"send": "Send",
-		"recovery" : "Recovery"
+		"recovery" : "Recovery",
+		"visitor": "(visitor)",
+		"unknown": "(unknown)"
 	},
 	"finnish": {
 		"languagename": "Suomi",
@@ -308,6 +310,8 @@
 		"incomplete": "Keskeneräinen",
 		"awarded": "Myönnetty",
 		"send": "Lähetä",
-		"recovery" : "Palautus"
+		"recovery" : "Palautus",
+		"visitor": "(kävijä)",
+		"unknown": "(tuntematon)"
 	}
 }
