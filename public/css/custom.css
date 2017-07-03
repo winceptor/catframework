@@ -99,3 +99,59 @@ width: 100%;
 #qrcode {
 	text-align: center;
 }
+
+textarea {
+	resize: vertical;
+}
+
+.required-sign {
+	color: red;
+	font-size: 20px;
+	line-height: 1px;
+	width: 0px;
+}
+
+.simple-divider {
+	margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.empty-divider {
+	margin-top: 10px;
+    margin-bottom: 10px;
+    border: none;
+}
+
+div:target {
+   background-color: #fafac5;
+}
+
+.popup {
+    position: fixed;
+    top: 1em;
+    left: 0px;
+    right: 0px;
+    z-index: 99;
+}
+
+.popupmsg {
+	background-color: whitesmoke;
+}
+
+
+.complete {
+    color: greenyellow;
+}
+.incomplete {
+    color: yellow;
+}
+.failed {
+    color: red;
+}
+.positive {
+    color: green;
+}
+
+.negative {
+    color: crimson;
+}

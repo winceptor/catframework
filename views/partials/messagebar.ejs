@@ -4,23 +4,23 @@
 <div class="container">
 
     <div class="text-center">
-		
-		<form class="col-sm-12 form-horizontal vertical-spacing" method="get" action="/message">
-			<div class="row">
+		<div class="row">
+			<form class="col-sm-12 form-horizontal vertical-spacing" method="get" action="/message"  onsubmit="return message();">
 				<div class="row">
+				
 					<div class="col-xs-12">
 						<div class="input-group">
-							<input type="text" class="form-control" name="q" value="<%= query || '' %>" placeholder="Message..." onFocus="this.select()" autofocus>
+							<input id="messageinput" type="text" class="form-control" name="q" value="<%= query || '' %>" placeholder="###message###" onFocus="this.select()" autofocus>
 		
 							<span class="input-group-btn">
-								<button class="btn btn-primary" type="submit">Send</button>
+								<button class="btn btn-primary">###send###</button>
 							</span>
 						
 						</div>
 					</div>
 				</div>
-			</div>
-		</form>
+			</form>
+		</div>
     </div>
 
 </div>

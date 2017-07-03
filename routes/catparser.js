@@ -1,18 +1,25 @@
 var router = require('express').Router();
 
+var iconhost = ["http://cdn.steamcommunity.com/economy/emoticon/",""];
+var iconhost = ["https://buildkiteassets.com/emoji/",".png?v1"];
 
-
-var gethtmlfor = function(tag, tagcontent, last)
+var gethtmlfor = function(tag, tagcontent, alt)
 {
+	var alt = alt || tagcontent;
 	var htmlcode = "";
 	var action = false;
-	if (tag =="noparse")
+	if (tag =="noparse" || tag=="html")
 	{
 		htmlcode = tagcontent;
 	}
 	if (tag =="icon")
 	{
-		htmlcode = "<img src='http://cdn.steamcommunity.com/economy/emoticon/" + tagcontent + "' class='icon' name='" + tagcontent + "' onError='imageerror(this);'>";
+		htmlcode = "<img src='" + iconhost[0] + tagcontent + iconhost[1] + "' class='icon' name='" + tagcontent + "' alt='" + alt + "' onerror='imageerror(this);'>";
+	}
+	if (tag =="sp" || tag=="spoiler")
+	{
+		tag = "sp";
+		htmlcode = '<div class="spoiler">' + tagcontent + '</div>';
 	}
 	if (tag =="autoparse")
 	{
@@ -20,14 +27,18 @@ var gethtmlfor = function(tag, tagcontent, last)
 		var pattern2 = /\.mp4|\.webm|\.webp|\.mkv|\.avi|\.m3u8/i;
 		var pattern3 = /\.svg|\.png|\.jpg|\.jpeg|\.gif|\.apng|\.steamusercontent\.com\/ugc\//i;
 		var pattern4 = /\.swf|\.flv/i;
-		var pattern5 = /www\.youtube\.com\/watch\?/ig;
+		var pattern5 = /youtube\.com\/watch\?/ig;
 		var pattern6 = /soundcloud\.com/ig;
+		var pattern7 = /twitter\.com\//ig;
+		var pattern8 = /youtu\.be\//ig;
 		var result1 = tagcontent.match(pattern1);
 		var result2 = tagcontent.match(pattern2);
 		var result3 = tagcontent.match(pattern3);
 		var result4 = tagcontent.match(pattern4);
 		var result5 = tagcontent.match(pattern5);
 		var result6 = tagcontent.match(pattern6);
+		var result7 = tagcontent.match(pattern7);
+		var result8 = tagcontent.match(pattern8);
 		if (result1)
 		{
 			tag = "audio";
@@ -44,13 +55,18 @@ var gethtmlfor = function(tag, tagcontent, last)
 		{
 			tag = "flash";
 		}
-		else if (result5)
+		else if (result5 || result8)
 		{
 			tag = "media";
 		}
 		else if (result6)
 		{
 			tag = "sc";
+		}
+		else if (result7)
+		{
+			//tag = "tw";
+			tag = "url";
 		}
 		else
 		{
@@ -75,7 +91,8 @@ var gethtmlfor = function(tag, tagcontent, last)
 		
 		if (protocolparts.length>1)
 		{
-			cleanurl = protocolparts[1];
+			//keep protocol
+			//cleanurl = protocolparts[1];
 		}
 		
 		var urlparts = cleanurl.split("/");
@@ -96,7 +113,7 @@ var gethtmlfor = function(tag, tagcontent, last)
 
 		htmlcode = '<a class="link" href="' + tagcontent + '" target="_blank">' + urlname + '</a>';
 	}
-	if (tag =="video" || tag =="vid" || tag =="webm" || tag =="audio" || tag =="track" || tag =="img" || tag =="image" || tag =="media" || tag =="flash" || tag =="sc")
+	if (tag =="wrap" || tag =="video" || tag =="vid" || tag =="webm" || tag =="audio" || tag =="track" || tag =="img" || tag =="image" || tag =="media" || tag =="flash" || tag =="tw" || tag =="sc" || tag =="spimg" || tag =="nsfw")
 	{
 		if (tag =="webm" || tag =="vid" || tag =="video")
 		{
@@ -145,13 +162,37 @@ var gethtmlfor = function(tag, tagcontent, last)
 			{
 				var scurl = 'http://api.soundcloud.com/resolve.json?url=' + soundcloud + '&client_id=386b66fb8e6e68704b52ab59edcdccc6';
 			
-				action = '<div class="wrappercontent soundcloud" >' + scurl + '</div></div>';
+				action = '<div class="wrappercontent soundcloud" >' + scurl + '</div>';
+			}
+		}
+		
+		if (tag =="tw")
+		{
+			htmlcode = "Error parsing twitter link.";
+			if (tagcontent.length>0)
+			{
+				var twurl = 'https://publish.twitter.com/oembed?url=' + tagcontent;
+				
+				action = '<div class="wrappercontent twitter" >' + twurl + '</div>';
 			}
 		}
 		
 		if (tag =="img" || tag =="image")
 		{
-			htmlcode = "<img src='" + tagcontent + "' class='expandedimage' alt='" + tagcontent + "' >";
+			htmlcode = "<img src='" + tagcontent + "' class='resizeable thumbnailimage' alt='" + tagcontent + "' onerror='imageerror(this);'>";
+		}
+		if (tag =="spimg")
+		{
+			htmlcode = "<img src='/img/spoiler.png' ssrc='" + tagcontent + "' class='resizeable spoiler thumbnailimage' onerror='imageerror(this);'>";
+		}		
+		if (tag =="nsfw")
+		{
+			htmlcode = "<img src='/img/nsfw.png' ssrc='" + tagcontent + "' class='resizeable nsfw thumbnailimage' onerror='imageerror(this);'>";
+		}
+		
+		if (tag =="wrap" )
+		{
+			htmlcode = "<div class='textwrap' alt='" + tagcontent + "'>" + tagcontent + "</div>";
 		}
 		if (action)
 		{
@@ -164,36 +205,15 @@ var gethtmlfor = function(tag, tagcontent, last)
 	}
 	if (htmlcode.length<1)
 	{
+		var last = true;
 		htmlcode = "[" + tag + "]" + tagcontent;
 		if (!last)
 		{
 			htmlcode += "[/" + tag + "]";
 		}
 	}
-
+	//htmlcode = "<span class='hidden'>" + alt + "</span>" + htmlcode;
 	return htmlcode;
-}
-
-var ImageExist = function(url) 
-{
-   var img = new Image();
-   img.src = url;
-   return img.height != 0;
-}
-
-function imageerror(object)
-{
-//$(document).on('error', '.icon', function() {
-	//console.log("found error icon");
-	if ($(object).hasClass("icon"))
-	{
-		var text = ":" + $(object).prop('name') + ":";
-		$(object).replaceWith(text);
-	}
-	else
-	{
-		$(object).attr('src', 'error.png');
-	}
 }
 
 
@@ -254,35 +274,48 @@ var parsecontent = function(textcontent)
 var parsetext = function(input) {
 	var textlines = input.split(/\r\n|\r|\n/g);
 	
-	for (v in textlines)
+	for (var v in textlines)
 	{
 		var textline = textlines[v];
 		
 		var textstrings = textline.split(" ");
 		
-		for (k in textstrings)
+		for (var k in textstrings)
 		{
 			var textstring = textstrings[k];
 			var linksplitter = textstring.split("://");
+			
 			if (linksplitter.length>1)
-			{
+			{//handle as link
 				var protocol = linksplitter[0];
 				var tagcontent = linksplitter[1];
-				var html = gethtmlfor("autoparse", protocol + "://" + tagcontent);
-				textstrings[k] = html;
+				var htmlstring = gethtmlfor("autoparse", protocol + "://" + tagcontent, textstring);
+				textstrings[k] = htmlstring;
 			}
-			
+			else
+			{//landle as icons
+				var emoticonstring = parseemoticons(textstring);
+				textstrings[k] = emoticonstring;
+			}
 		}
 		
-		var onetextline = textstrings.join(" ");
+		textlines[v] = textstrings.join(" ");
+	}
+	var output = textlines.join("<br>");
+
+	return output;
+}
+
+var parseemoticons = function(word) {
+	/*var onetextline = textstrings.join(" ");
 			
 	var parsedemoticons = "";
 	//var toparseemoticons = parsedlinktext;
 	var words = onetextline.split(" ");
 
 	for (var i in words) 
-	{
-		var word = words[i];
+	{*/
+		//var word = words[i];
 		var emoticon = word;
 		
 		//var pattern1 = /:$/;
@@ -297,9 +330,9 @@ var parsetext = function(input) {
 			
 			if ( j%2 == 1 && split.length>(j+1))
 			{
-				var url = "http://cdn.steamcommunity.com/economy/emoticon/" + split[j];
+				var url = iconhost + split[j];
 				var iconname = split[j];
-				emoticon = gethtmlfor("icon",iconname);
+				emoticon = gethtmlfor("icon",iconname, word);
 				
 				/*if (ImageExist(url))
 				{
@@ -325,6 +358,7 @@ var parsetext = function(input) {
 			}
 			emoticons = emoticons + emoticon;
 		}
+		/*
 		if (i>0)
 		{
 			parsedemoticons = parsedemoticons + " " + emoticons;
@@ -334,22 +368,44 @@ var parsetext = function(input) {
 			parsedemoticons = emoticons;
 		}
 	}
-		
-		textlines[v] = parsedemoticons;
-	}
-	var output = textlines.join("<br>");
+	*/
+	//textlines[v] = parsedemoticons;
+	return emoticons;
+}
 
-	return output;
+var escapehtml = function(text){
+	if (!text || text==null || text==undefined)
+	{
+		return "";
+	}
+  var map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+
+var parsehtml = function(message)
+{
+	var unparsed = message || '';
+	var parsedhtml = parsecontent(unparsed);
+	return parsedhtml || "";
 }
 
 var parsemessage = function(message)
 {
-	var parsedmessage = parsecontent(message);
+	var escaped = escapehtml(message);
+	var parsedmessage = parsecontent(escaped);
 	return parsedmessage || "";
 }
 
 
-var catparsehelp = "<strong>Most things are parsed automatically! No need for tags, just write the link.<br>When posting links you can append </strong>#link_name_here <strong>to the link.</strong><br><strong>Example:</strong> http://exampleurl.com/somelink#Some_named_link <strong>makes a link with name:</strong> 'Some named link'.<br>";	
+var catparsehelp = "<strong>Most things are parsed automatically! No need for tags, just write the link.<br>When posting links you can append </strong>#link_name_here <strong>to the link.</strong><br><strong>Example:</strong> http://exampleurl.com/somelink#Some_named_link <strong>makes a link with name:</strong> 'Some named link'.";	
 
 var taghelp = {};
 taghelp["url"] = "basic link";
@@ -360,6 +416,9 @@ taghelp["audio"] = "audio link";
 taghelp["media"] = "youtube link";
 taghelp["image"] = "image link";
 taghelp["img"] = "image link";
+taghelp["sp"] = "spoiler text";
+taghelp["spimg"] = "spoiler image link";
+taghelp["nsfw"] = "nsfw image link";
 taghelp["flash"] = "flash link";
 taghelp["sc"] = "soundcloud link";
 taghelp["wrap"] = "wrap text";
@@ -371,7 +430,9 @@ for (var tag in taghelp)
 }
 catparsehelp += "<br>";
 
+
 router.use(function(req, res, next) {
+	res.locals.escapehtml = escapehtml;
 	res.locals.catparse = parsemessage;
 	res.locals.catparsehelp = catparsehelp;
 	next();

@@ -89,7 +89,6 @@ video, audio{
 	display: inline-block;
 	overflow: hidden;
 	vertical-align: top;
-	text-align: center;
 	max-width: 100%;
 	margin: 0px auto;
 	/*font-size: 0px;*/
@@ -140,4 +139,18 @@ video, audio{
     padding: 4px;
     background-color: whitesmoke;
     color: black;
+    white-space: pre;
+}
+
+.output {
+	background-color: #fefdfd;
+	box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+	border-width: 0px;
+	border-style: solid;
+	border-radius: 3px;
+	border-color: black;
+	padding: 3px;
+	font-size: 1em;
 }

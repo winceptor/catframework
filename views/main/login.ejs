@@ -1,31 +1,40 @@
 <!-- views/login.ejs -->
+<% if (typeof profile == "undefined") { profile = false; } %>
 
 <% layout('layout') -%>
+
 <div class="container">
 
-    <div class="col-sm-6 col-sm-offset-3">
+    <h1 class="title text-center"><span class="fa fa-sign-in"></span> ###login###</h1>
     
-        <h1><span class="fa fa-sign-in"></span> ###login###</h1>
+    <hr class="simple-divider">
     
-        <!-- LOGIN FORM -->
-        <form action="/login" method="post">
-            <div class="form-group">
-                <label>###email###</label>
-                <input type="text" class="form-control" name="email">
-            </div>
-            <div class="form-group">
-                <label>###password###</label>
-                <input type="password" class="form-control" name="password">
-            </div>
-    
-            <button type="submit" class="btn btn-warning btn-lg">###login###</button>
-        </form>
+	<!-- login-form -->
+	<form class="form-horizontal spacing" method="post">
+
+		<div class="form-group">
+			<label for="email" class="col-sm-2 control-label">###email###</label>
+			<div class="col-sm-8">
+				<input type="email" id="email" name="email" value="<% if (profile) { %><%= profile.local.email || "" %><% } %>" placeholder="###emailplaceholder###" class="form-control textarea">
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="password" class="col-sm-2 control-label">###password###<% if (!profile) { %><% } %></label>
+			<div class="col-sm-8">
+				<input type="password" id="password" name="password" placeholder="###password###" class="form-control textarea">
+			</div>
+		</div>
+
+
+		<div class="row vertical-spacing">
+			<div class="col-sm-push-2 col-sm-8">
+				<button type="submit" class="btn btn-warning btn-lg">###login###</button>
+				
+				<a class="button btn btn-primary btn-lg" href="/recovery">###recovery###</a>
+			</div>
+		</div>
 		
-		<hr class="simple-divider">
-		
-		<p><a class="" href="/recovery">###recovery###</a></p>
-        
-    
-    </div>
+	</form>
 
 </div>
+

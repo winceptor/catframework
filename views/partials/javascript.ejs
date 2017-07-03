@@ -36,6 +36,33 @@
 			//window.location.href = command;
 		}
 	}
+	function message() {
+		var messageinput = document.getElementById("messageinput");
+		
+		if (!messageinput || messageinput.length == 0) {
+			console.log("error messageinput missing");
+			return false;
+		}
+		if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+			var xmlhttp = new XMLHttpRequest();
+		}
+
+		messageinput.classList.add("disabled");
+		
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				messageinput.classList.remove("disabled");
+				messageinput.value = "";
+			}
+		}
+		var message = messageinput.value;
+		console.log("Sending: " + message);
+		xmlhttp.open("GET", "/message?q=" + message );
+		xmlhttp.send();
+		
+		return false;
+	}
 </script>
 
 <script type="text/javascript">

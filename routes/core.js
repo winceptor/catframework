@@ -255,19 +255,29 @@ router.use(function(req, res, next) {
 	}
 });
 
-router.use(function(req, res, next) {
-	res.locals.wip = wip;
-
-	var gmtoffset = res.locals.gmtoffset || 0;
-
+router.use(function(req, res, next) {	
 	
-	res.locals.paginator_choices = config.paginator_choices || [10,30,50,100,250,1000];
-	res.locals.paginator_default = config.paginator_default || config.paginator_choices[0] || 30;
+	res.locals.paginator = {};
+	
+	res.locals.paginator.choices = config.paginator_choices || [10,30,50,100,250,1000];
+	res.locals.paginator.default = config.paginator_default || config.paginator_choices[0] || 30;
 
-	res.locals.logfile = config.log_filename;
+	var page = req.query.p || 1;
+	var num = req.query.n || res.locals.paginator.default;
+	num = Math.min(num, 1000);
+	var frm = Math.max(0,page*num-num);
+	
+	res.locals.paginator.page = page;
+	res.locals.paginator.num = num;
+	res.locals.paginator.frm = frm;
+	res.locals.paginator.total = 0;
+	
+	next();
+});
 
-	res.locals.sanitize = sanitize;
-
+router.use(function(req, res, next) {
+	var gmtoffset = res.locals.gmtoffset || 0;
+	
 	var gmtoffsetcookie = req.cookies.gmtoffset;
 	res.locals.gmtclient = gmtoffsetcookie || config.gmt_default || 0;
 	res.locals.gmtclient = parseInt(res.locals.gmtclient);
@@ -320,17 +330,20 @@ router.use(function(req, res, next) {
 	res.locals.Datestamp = DateToDatestamp(Datestamp);
 	var Timestamp = new Date();
 	res.locals.Timestamp = DateToTimestamp(Timestamp);
+	
+	next();
+});
+
+router.use(function(req, res, next) {
+	res.locals.wip = wip;
+
+	res.locals.logfile = config.log_filename;
+
+	res.locals.sanitize = sanitize;
 
 	res.locals.clientip = req.header('x-forwarded-for');
 
 	res.locals.remoteip = req.connection.remoteAddress || req.socket.remoteAddress || "invalid";
-
-	if (!req.secure) {
-		res.locals.hosturl = "http://" + req.headers.host;
-	}
-	else {
-		res.locals.hosturl = "https://" + req.headers.host;
-	}
 
 	res.locals.languagecode = "en";
 
@@ -350,6 +363,40 @@ router.use(function(req, res, next) {
 
 	res.locals.hasadmin = admin || localadmin || zeroadmins;
 
+	res.locals.user = req.user;
+
+	res.locals.countries = countries;
+
+	next();
+});
+
+router.use(function(req, res, next) {
+	var referer = req.header('Referer') || '/';
+	res.locals.referer = referer || '/';
+	//res.locals.referer = encodeURIComponent(referer);
+
+	if (!req.secure) {
+		res.locals.hosturl = "http://" + req.headers.host;
+	}
+	else {
+		res.locals.hosturl = "https://" + req.headers.host;
+	}
+
+	//remove last / for canonical rel link url
+	var canonicalpath = req.path;
+	if (canonicalpath.slice(-1) == "/") {
+		canonicalpath = canonicalpath.slice(0, -1);
+	}
+	res.locals.canonicalurl = res.locals.hosturl + canonicalpath;
+	res.locals.canonicalpath = canonicalpath;
+
+	res.locals.currenturl = res.locals.hosturl + req.originalUrl;
+	res.locals.currentpath = req.originalUrl;
+
+	next();
+});
+
+router.use(function(req, res, next) {
 	res.locals.filesizebeautify = function(filesize, type) {
 		var type = type || "B";
 		var filesize_kb = Math.round(filesize / 1000);
@@ -367,16 +414,12 @@ router.use(function(req, res, next) {
 		}
 		return filesize + " " + type;
 	}
-
-	var referer = req.header('Referer') || '/';
-	res.locals.referer = referer || '/';
-	//res.locals.referer = encodeURIComponent(referer);
-
-	res.locals.user = req.user;
-
-	res.locals.countries = countries;
+	next();
+});
 
 
+
+router.use(function(req, res, next) {
 	//res.locals.server_host = secret.server_host;
 	res.locals.captchasite = secret.captcha_sitekey || "";
 	res.locals.captchakey = secret.captcha_secretkey || "";
@@ -389,19 +432,6 @@ router.use(function(req, res, next) {
 		req.body['g-recaptcha-response'] = '';
 	}
 	res.locals.captchaurl = res.locals.captchaapi + "?secret=" + res.locals.captchakey + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
-
-
-	//remove last / for canonical rel link url
-	var canonicalpath = req.path;
-	if (canonicalpath.slice(-1) == "/") {
-		canonicalpath = canonicalpath.slice(0, -1);
-	}
-	res.locals.canonicalurl = res.locals.hosturl + canonicalpath;
-	res.locals.canonicalpath = canonicalpath;
-
-	res.locals.currenturl = res.locals.hosturl + req.originalUrl;
-	res.locals.currentpath = req.originalUrl;
-
 	next();
 });
 

@@ -74,7 +74,8 @@ var credentials = {
 */
 
 
-var files = require('./routes/files');
+var core = require('./routes/core');
+
 var logger = require('./routes/logger');
 
 var translator = require('./routes/translator');
@@ -84,10 +85,9 @@ var sockets = require('./routes/sockets')(io);
 
 //var mapping = require('./routes/mapping');
 
-var core = require('./routes/core');
+var files = require('./routes/files');
 
 var routes = require('./routes/routes');
-
 
 // configuration ===============================================================
 
@@ -111,10 +111,9 @@ app.use('/js', express.static(__dirname + '/node_modules/eonasdan-bootstrap-date
 app.use('/css', express.static(__dirname + '/node_modules/eonasdan-bootstrap-datetimepicker/build/css')); // redirect CSS datetimepicker
 
 
-//app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.json()); // get information from html forms
-//app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
@@ -151,11 +150,7 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
-//var io = socketio.listen(httpServer);
-//io.set('log level', 0);
-
-
-//core middleware
+//logger middleware
 app.use(logger);
 
 //core
@@ -164,11 +159,15 @@ app.use(core);
 //additional core middleware
 app.use(translator);
 app.use(catparser);
-app.use(files);
 app.use(sockets);
 
+//extra middleware
+//app.use();
+
 //pages
+app.use(files);
 app.use(routes);
+
 
 //finished loading app
 console.log(printdivider);
@@ -188,6 +187,7 @@ db.on('error', function(error) {
 db.on('connected', function() {
 	console.log(printprefix + 'MongoDB connected!');
 	db_ok = true;
+	console.log(printdivider);
 });
 db.once('open', function() {
 	//console.log(printprefix + 'MongoDB connection opened!');
@@ -199,6 +199,7 @@ db.on('reconnected', function() {
 db.on('disconnected', function() {
 	console.log(printprefix + 'MongoDB disconnected!');
 	db_ok = false;
+	console.log(printdivider);
 /*	mongoose.connect(secret.db_database, {
 		server: {
 			auto_reconnect: false

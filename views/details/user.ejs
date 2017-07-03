@@ -4,11 +4,14 @@
 <% if (profile) { %>
  
     <div class="well">
-        <h3><span class="fa fa-user"></span> Local</h3>
+        <h3><span class="fa fa-user"></span> <%= profile.local.name %></h3>
 
+        <hr class="simple-divider">
+        
         <p>
             <strong>###id###</strong>: <%= profile._id %><br>
-            <strong>###email###</strong>: <%= profile.local.email %><br> 
+            <strong>###email###</strong>: <%= profile.local.email %><br>
+            
         </p>        
 
     </div>

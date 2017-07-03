@@ -1,3 +1,6 @@
+
+<% if (user.score) {var totalscore = user.score.upvotes-user.score.downvotes; } else { user.score = {}; totalscore=0; } %>
+
 <div class="container">
 
     <div class="row vertical-spacing">
@@ -6,12 +9,13 @@
             
             <div class="pull-right">
                 <% if (user) { %>
-                    <a href="/profile" class="btn btn-default"><span class="fa fa-user"></span> <%= user.google.email || user.local.email || "###profile###" %></a>
-                    <a href="/logout" class="btn btn-default btn-warning"><span class="fa fa-user"></span> ###logout###</a>
+                     
+                    <a href="/profile" class="btn btn-primary"><span class="fa fa-user"></span> <%= user.local.name || user.local.email || "###profile###" %></a>
+                    <a href="/logout" class="btn btn-danger"><span class="fa fa-key"></span> ###logout###</a>
                     
                 <% } else { %>
-                    <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> ###login###</a>
-                    <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> ###signup###</a>
+                    <a href="/login" class="btn btn-primary"><span class="fa fa-sign-in"></span> ###login###</a>
+                    <a href="/signup" class="btn btn-warning"><span class="fa fa-user"></span> ###signup###</a>
                     
                 <% } %>
     
@@ -19,13 +23,23 @@
         </div>
     </div>
   
-    <% if (user && hasadmin) { %>
+    <% if (user) { %>
     <div class="row vertical-spacing">
         <div class="col-xs-12">
-            <a class="btn btn-warning" href="/files"><span class="fa fa-folder"></span> ###files###</a>
-            <% if (zeroadmins) { %>
-                <a class="btn btn-danger" href="/claim"><span class="fa fa-warning"></span> Claim</a>
-            <% } %>
+
+            
+            <% if (hasadmin) { %>
+                <div class="pull-right">
+                    <a class="btn btn-warning" href="/files"><span class="fa fa-folder"></span> ###files###</a>
+                    
+                    <% if (zeroadmins) { %>
+                        
+                        <a class="btn btn-danger" href="/claim"><span class="fa fa-warning"></span> Claim</a>
+                        
+                    <% } %>
+                </div>
+             <% } %>   
+            
         </div>
     </div>
     <% } %>
